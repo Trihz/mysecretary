@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [todaysTasksTitle(tabController)],
+        children: [todaysTasksTitle(tabController), todaysTasks(tabController)],
       ),
     );
   }
@@ -727,6 +727,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     getUsername(); // initialize the username
+    todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
+    todaysTasksHashMap =
+        HomeScreenLogic().readTodaysData(); // initialize today's tasks hashmap
+    tasksHashMap = HomeScreenLogic()
+        .readAllTasksData(); // initialize all the tasks hashmap
+
     super.initState();
   }
 
