@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
 
 void main() async {
@@ -17,7 +16,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeScreen());
+        debugShowCheckedModeBanner: false, home: HomeScreen());
   }
 }

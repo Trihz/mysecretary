@@ -3,6 +3,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mysecretary/business/business_ui.dart';
+import 'package:mysecretary/class/class_ui.dart';
+import 'package:mysecretary/personal/personal_ui.dart';
 import 'package:mysecretary/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -91,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-   // function to display the third container
+  // function to display the third container
   Widget thirdContainer(TabController tabController) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.47,
@@ -177,7 +180,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Class()));
+                  },
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.25,
@@ -213,7 +219,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 GestureDetector(
-                  onTap: (() {}),
+                  onTap: (() {
+                     Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Personal()));
+                  }),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.25,
@@ -249,7 +260,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 GestureDetector(
-                  onTap: (() {}),
+                  onTap: (() {
+                     Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Business()));
+                  }),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.25,
