@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 
 class BusinessLogic {
   // referencing the already opened local
-  final tasksDatabase = Hive.box("Tasks");
+  final tasksDatabase = Hive.box("TasksDatabase");
 
   // function to display a toast message
   void displayToast(String message) {
