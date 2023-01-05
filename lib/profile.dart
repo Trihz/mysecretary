@@ -21,7 +21,7 @@ class _ProfileState extends State<Profile> {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
@@ -32,6 +32,7 @@ class _ProfileState extends State<Profile> {
   void saveDetails(String userNameToStorage) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("Username", userNameToStorage);
+    displayToast("Details Saved");
   }
 
   // function to get data from the loacl storage

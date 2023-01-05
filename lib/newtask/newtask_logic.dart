@@ -34,7 +34,7 @@ class NewTaskLogic {
     displayToast(
         // ignore: prefer_interpolation_to_compose_strings
         "Data Stored: " +
-            tasksDatabase.get(2, defaultValue: "No data found").toString());
+            tasksDatabase.get(3, defaultValue: "No data found").toString());
   }
 
   /*

@@ -350,13 +350,13 @@ class _NewTaskState extends State<NewTask> {
               taskDefinition_TextField = textEditingController.value.text;
             });
             //NewTaskLogic().predefineKeyValue();
-            /*NewTaskLogic().recordData(
+            NewTaskLogic().recordData(
                 taskName_TextField,
                 taskDefinition_TextField,
                 taskStartDate_Calendar,
                 taskEndDate_Calendar,
-                taskGroup);*/
-            NewTaskLogic().readData();
+                taskGroup);
+            //NewTaskLogic().readData();
             //NewTaskLogic().deleteDatabase();
           },
           style: ElevatedButton.styleFrom(

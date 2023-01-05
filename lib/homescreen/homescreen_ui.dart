@@ -5,9 +5,11 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
+import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
 import 'package:mysecretary/profile.dart';
+import 'package:mysecretary/tasksdetails/tasksdetails_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,6 +34,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String todayDate = "";
   // a list to define the dates of the month
   List date = ["1", "2", "3", "04", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+  // variables to hold different types of tasks
+  HashMap<int, List<String>> tasksForDateTappedHashMap = HashMap();
+  HashMap<int, List<String>> tasksHashMap = HashMap();
+  HashMap<int, List<String>> todaysTasksHashMap = HashMap();
 
   /* 
       function to get username 
@@ -104,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [],
+        children: [todaysTasksTitle(tabController)],
       ),
     );
   }
@@ -440,6 +447,277 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // function to display today's tasks
+  Widget todaysTasksTitle(TabController tabController) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.08,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 0.6,
+            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(1, 1),
+                      blurRadius: 1,
+                      spreadRadius: 1)
+                ],
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            child: TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: mainColor,
+                controller: tabController,
+                indicator: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  color: mainColor,
+                ),
+                tabs: const [
+                  Tab(
+                    child: Text(
+                      "ALL TASKS",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      "TODAY",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                    ),
+                  ),
+                ]),
+          ),
+          Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.width * 0.1,
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tasksHashMap = HomeScreenLogic().readAllTasksData();
+                    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+                  });
+                },
+                child: Opacity(
+                  opacity: 0.9,
+                  child: Icon(
+                    Icons.refresh,
+                    size: 25,
+                    color: mainColor,
+                  ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  // function to display the today's tasks container
+  Widget todaysTasks(TabController tabController) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.37,
+      width: MediaQuery.of(context).size.width * 1,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: TabBarView(
+        controller: tabController,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: ListView.builder(
+                itemCount: tasksHashMap.length,
+                itemBuilder: ((context, index) {
+                  return GestureDetector(
+                    onTap: (() {
+                      String name = tasksHashMap[index + 1]![0].toString();
+                      String definition =
+                          tasksHashMap[index + 1]![1].toString();
+                      String start = tasksHashMap[index + 1]![2].toString();
+                      String end = tasksHashMap[index + 1]![3].toString();
+                      String group = tasksHashMap[index + 1]![4].toString();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskDetailsUI(
+                                  name, definition, start, end, group)));
+                    }),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      margin:
+                          const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(1, 1),
+                              blurRadius: 1,
+                              spreadRadius: 1)
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.08,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Icon(
+                              Icons.notifications_active,
+                              color: mainColor,
+                              size: 20,
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                tasksHashMap[index + 1]![0].toString(),
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.07,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: mainColor,
+                              child: GestureDetector(
+                                child: CircleAvatar(
+                                  radius: 11,
+                                  backgroundColor: Colors.white,
+                                  child: Opacity(
+                                    opacity: 0.5,
+                                    child: Icon(Icons.star,
+                                        color: uncompletedTaskColor, size: 13),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                })),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: ListView.builder(
+                itemCount: todaysTasksHashMap.length,
+                itemBuilder: ((context, index) {
+                  return GestureDetector(
+                    onTap: (() {
+                      String name =
+                          todaysTasksHashMap[index + 1]![0].toString();
+                      String definition =
+                          todaysTasksHashMap[index + 1]![1].toString();
+                      String start =
+                          todaysTasksHashMap[index + 1]![2].toString();
+                      String end = todaysTasksHashMap[index + 1]![3].toString();
+                      String group = tasksHashMap[index + 1]![4].toString();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskDetailsUI(
+                                  name, definition, start, end, group)));
+                    }),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      margin:
+                          const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(1, 1),
+                              blurRadius: 1,
+                              spreadRadius: 1)
+                        ],
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.08,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Icon(
+                              Icons.notifications_active,
+                              color: mainColor,
+                              size: 20,
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                todaysTasksHashMap[index + 1]![0].toString(),
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: mainColor,
+                              child: const CircleAvatar(
+                                radius: 7,
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                })),
+          ),
+        ],
+      ),
+    );
+  }
+
   // function to add new task
   void addNewTask() {
     Navigator.push(
@@ -448,6 +726,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    getUsername(); // initialize the username
     super.initState();
   }
 
