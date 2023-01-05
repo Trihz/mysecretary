@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
+import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
 import 'package:mysecretary/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -220,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 GestureDetector(
                   onTap: (() {
-                     Navigator.push(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const Personal()));
@@ -261,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 GestureDetector(
                   onTap: (() {
-                     Navigator.push(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const Business()));
@@ -420,7 +421,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Align(
         alignment: Alignment.center,
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            addNewTask();
+          },
           child: const CircleAvatar(
               radius: 20,
               backgroundColor: Color.fromARGB(255, 41, 143, 174),
@@ -435,6 +438,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  // function to add new task
+  void addNewTask() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const NewTask()));
   }
 
   @override

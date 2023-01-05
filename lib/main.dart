@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox("TasksDatabase");
   runApp(const MyApp());
 }
 
