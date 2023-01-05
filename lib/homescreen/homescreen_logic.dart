@@ -5,8 +5,9 @@ import 'package:intl/intl.dart';
 import 'dart:collection';
 
 class HomeScreenLogic {
+  
   // referencing the already opened local
-  final tasksDatabase = Hive.box("Tasks");
+  final tasksDatabase =Hive.box("my_secretary");
 
   // variable to store the start date of each task
   String startDate = "";
