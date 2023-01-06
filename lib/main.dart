@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -24,8 +26,47 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  String userName = "";
+  /* 
+      function to get username 
+      - achieved through shared preferences
+      - stored in the local storage
+  */
+  void getUsername() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final userNameStorage = sharedPreferences.getString("Username");
+    setState(() {
+      userName = userNameStorage.toString();
+      displayToast(userName);
+    });
+  }
+
+  // function to display a toast message
+  void displayToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  @override
+  void initState() {
+    getUsername();
+    displayToast(userName);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +74,13 @@ class SplashScreen extends StatelessWidget {
       splash: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Text(
-            "My Secretary",
-            style: TextStyle(
+          Text(
+            "Hello ${userName}",
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,
               fontSize: 40,
             ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Container(
-            height: 200,
-            width: 200,
           ),
         ],
       ),

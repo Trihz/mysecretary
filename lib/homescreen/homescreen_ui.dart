@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // variable to store the date for today
   String todayDate = "";
   // a list to define the dates of the month
-  List date = ["1", "2", "3", "04", "5", "6", "7", "8", "9", "10", "11", "12"];
+  List date = ["1", "2", "3", "04", "5", "6", "7", "8", "9", "10", "11", "12","13"];
 
   // variables to hold different types of tasks
   HashMap<int, List<String>> tasksForDateTappedHashMap = HashMap();

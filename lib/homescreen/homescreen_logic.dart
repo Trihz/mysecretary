@@ -33,7 +33,11 @@ class HomeScreenLogic {
 
   // this function builds the date after a user taps the scrolling dayss
   String buildScrollingDate(String dayTapped) {
+    if (dayTapped.length == 1) {
+      dayTapped = "0$dayTapped";
+    }
     String builtDate = DateFormat("yyyy-MM-$dayTapped").format(DateTime.now());
+    
     return builtDate;
   }
 
