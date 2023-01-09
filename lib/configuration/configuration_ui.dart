@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mysecretary/configuration/configuration_logic.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
 
 class ConfigurationScreen extends StatefulWidget {
@@ -40,30 +41,124 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   //function to display the configure screen
   Widget configureScreen() {
-    return isConfigured ? configureButton() : const HomeScreen();
+    return isConfigured ? configureScreenDisplay() : const HomeScreen();
   }
 
   // function to display the configure button
-  Widget configureButton() {
-    return GestureDetector(
-      onLongPress: (() {
-        displayToast("App Configured Successfully");
-        setState(() {
-          isConfiguredbuttonState = false;
-        });
-      }),
-      child: CircleAvatar(
-        radius: 37,
-        backgroundColor: borderColor,
-        child: CircleAvatar(
-          radius: 33,
-          backgroundColor: bodyColor,
-          child: Text(
-            "CONFIGURE",
-            style: TextStyle(
-                fontWeight: FontWeight.w500, color: textColor, fontSize: 10),
+  Widget configureScreenDisplay() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 1,
+      width: MediaQuery.of(context).size.width * 1,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.17,
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  decoration: const BoxDecoration(color: Colors.transparent),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Icon(
+                        Icons.camera_rounded,
+                        size: 65,
+                      ),
+                      Text(
+                        "Choose Photo",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            color: mainColor,
+                            fontSize: 15),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  decoration: const BoxDecoration(color: Colors.transparent),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      prefixIcon: Opacity(
+                        opacity: 0.5,
+                        child: Icon(
+                          Icons.person,
+                          color: mainColor,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
+                        borderSide: BorderSide(
+                          color: mainColor,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
+                        borderSide: BorderSide(
+                          color: mainColor,
+                        ),
+                      ),
+                      hintText: "Username",
+                      hintStyle: TextStyle(
+                          color: mainColor,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w100),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.12,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: GestureDetector(
+              onLongPress: (() {
+                displayToast("App Configured Successfully");
+                ConfigurationLogic()
+                    .predefineKeyValue(); // predefine the key value to "0" during configuration
+                ConfigurationLogic().readData();
+                setState(() {
+                  isConfiguredbuttonState =
+                      false; // set the state to false meaning that configuration has been done
+                });
+              }),
+              child: CircleAvatar(
+                radius: 37,
+                backgroundColor: borderColor,
+                child: CircleAvatar(
+                  radius: 33,
+                  backgroundColor: bodyColor,
+                  child: Text(
+                    "CONFIGURE",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: textColor,
+                        fontSize: 10),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -101,19 +196,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               width: MediaQuery.of(context).size.width * 1,
               decoration: const BoxDecoration(color: Colors.transparent),
               child: Center(
-                child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.grey.shade300,
-                        onPrimary: Colors.black,
-                        shadowColor: Colors.grey,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10)))),
-                    child: const Text(
-                      "CONTINUE",
-                      style: TextStyle(),
-                    )),
+                child: Text(
+                  "Restart the App to save changes",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: mainColor,
+                      fontSize: 17),
+                ),
               )),
         ],
       ),
