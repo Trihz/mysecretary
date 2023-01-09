@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mysecretary/configuration/configuration_ui.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
@@ -64,8 +65,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    //getUsername();
-    //displayToast(userName);
+    getUsername();
+    displayToast(userName);
     super.initState();
   }
 
@@ -76,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            "Hello ",
+            "Hello $userName",
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,
@@ -86,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       ),
       duration: 500,
-      nextScreen: const HomeScreen(),
+      nextScreen: const ConfigurationScreen(),
       splashIconSize: 250,
       splashTransition: SplashTransition.fadeTransition,
       animationDuration: const Duration(seconds: 1),
