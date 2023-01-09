@@ -1,10 +1,9 @@
 import 'dart:collection';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
+import 'package:mysecretary/configuration/configuration_screen.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
@@ -33,7 +32,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // variable to store the date for today
   String todayDate = "";
   // a list to define the dates of the month
-  List date = ["1", "2", "3", "04", "5", "6", "7", "8", "9", "10", "11", "12","13"];
+  List date = [
+    "1",
+    "2",
+    "3",
+    "04",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13"
+  ];
 
   // variables to hold different types of tasks
   HashMap<int, List<String>> tasksForDateTappedHashMap = HashMap();
@@ -465,8 +478,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Profile()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ConfigurationScreen()));
           },
           child: Container(
             height: 60,
@@ -845,10 +860,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     getUsername(); // initialize the username
     todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
-    todaysTasksHashMap =
+    /*todaysTasksHashMap =
         HomeScreenLogic().readTodaysData(); // initialize today's tasks hashmap
     tasksHashMap = HomeScreenLogic()
-        .readAllTasksData(); // initialize all the tasks hashmap
+        .readAllTasksData(); // initialize all the tasks hashmap*/
 
     super.initState();
   }

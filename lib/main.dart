@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox("TasksDatabase");
+  print("1");
   runApp(const MyApp());
 }
 
@@ -63,8 +64,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    getUsername();
-    displayToast(userName);
+    //getUsername();
+    //displayToast(userName);
     super.initState();
   }
 
@@ -75,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            "Hello ${userName}",
+            "Hello ",
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,
