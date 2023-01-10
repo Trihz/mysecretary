@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
-        children: [thirdContainer(tabController), fourthContainer()],
+        children: [fourthContainer()],
       ),
     );
   }
@@ -856,8 +856,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    getUsername(); // initialize the username
-    todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
+    //getUsername(); // initialize the username
+    //todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
     /*todaysTasksHashMap =
         HomeScreenLogic().readTodaysData(); // initialize today's tasks hashmap
     tasksHashMap = HomeScreenLogic()

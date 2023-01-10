@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mysecretary/configuration/configuration_logic.dart';
-import 'package:mysecretary/homescreen/homescreen_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   const ConfigurationScreen({super.key});
@@ -25,7 +24,11 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   // variable to store status of the button
   bool isConfiguredbuttonState = true;
-  bool isConfigured = true;
+  bool isConfigurationDone = true;
+
+  // variables to store the username and user password
+  String userName = "";
+  String userPassword = "";
 
   // function to display a toast message
   void displayToast(String message) {
@@ -41,7 +44,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   //function to display the configure screen
   Widget configureScreen() {
-    return isConfigured ? configureScreenDisplay() : const HomeScreen();
+    return Homescreen();
   }
 
   // function to display the configure button
@@ -67,9 +70,10 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Icon(
-                        Icons.camera_rounded,
+                      Icon(
+                        Icons.photo_camera,
                         size: 65,
+                        color: mainColor,
                       ),
                       Text(
                         "Choose Photo",
@@ -87,7 +91,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                   decoration: const BoxDecoration(color: Colors.transparent),
                   child: TextField(
                     onChanged: (value) {
-                      setState(() {});
+                      setState(() {
+                        userName = value;
+                      });
                     },
                     decoration: InputDecoration(
                       isDense: true,
@@ -122,6 +128,49 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     ),
                   ),
                 ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  decoration: const BoxDecoration(color: Colors.transparent),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        userPassword = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      prefixIcon: Opacity(
+                        opacity: 0.5,
+                        child: Icon(
+                          Icons.password,
+                          color: mainColor,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
+                        borderSide: BorderSide(
+                          color: mainColor,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5)),
+                        borderSide: BorderSide(
+                          color: mainColor,
+                        ),
+                      ),
+                      hintText: "Password",
+                      hintStyle: TextStyle(
+                          color: mainColor,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w100),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -131,7 +180,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             width: MediaQuery.of(context).size.width * 1,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: GestureDetector(
-              onLongPress: (() {
+              onTap: (() {
+                recorduserDetails();
+                readUserDetails();
                 displayToast("App Configured Successfully");
                 ConfigurationLogic()
                     .predefineKeyValue(); // predefine the key value to "0" during configuration
@@ -209,6 +260,32 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     );
   }
 
+  // function to record the user name and password
+  void recorduserDetails() async {
+    // declare the instance of Shared Preference
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // record the values to the defined database as key-value pair
+    sharedPreferences.setString("Username", userName);
+    sharedPreferences.setString("Userpassword", userPassword);
+    displayToast("Details Saved");
+  }
+
+  // function to show the details stored in the database created by shared preference
+  void readUserDetails() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    displayToast(sharedPreferences.getString("Username").toString());
+    displayToast(sharedPreferences.getString("Userpassword").toString());
+  }
+
+  // function to display the homescreen
+  Widget Homescreen() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 1,
+      width: MediaQuery.of(context).size.width * 1,
+      decoration: const BoxDecoration(color: Colors.red),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,13 +294,15 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.white),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: MediaQuery.of(context).size.height * 1,
         width: MediaQuery.of(context).size.width * 1,
         decoration: const BoxDecoration(color: Colors.transparent),
-        child: Center(
-            child: isConfiguredbuttonState
-                ? configureScreen()
-                : configureSuccessScreen()),
+        child: SingleChildScrollView(
+          child: Center(
+              child: isConfiguredbuttonState
+                  ? configureScreen()
+                  : configureSuccessScreen()),
+        ),
       ),
     ));
   }
