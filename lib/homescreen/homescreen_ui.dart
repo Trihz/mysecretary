@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  // function to show the lower containe
+  // function to show the lower container
   Widget upperContainer() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.45,
