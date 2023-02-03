@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
 import 'package:mysecretary/configuration/configuration_logic.dart';
+import 'package:mysecretary/gradienticon.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
@@ -33,12 +34,15 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
   Color borderColor = Colors.grey.shade300;
   Color textColor = Colors.white;
 
-  // variable to hold the sate of the theme
-  bool themeStatus = false;
+  // varaibles to store the main screen gradient colors
+  Color color1 = Colors.purple;
+  Color color2 = Colors.orange;
 
-  // variable to store status of the button
-  bool isConfiguredbuttonState = true;
-  bool isConfigurationDone = false;
+  /// this variable stores the status of whether configuration has been done or not
+  /// it controls the navigation of the app during starting
+  /// if configuration has been done the the navigation is from the splashscreen >>>> homescreen
+  /// if configuration has not been done then the flow is from the splashscreen >>>> configuringWindow >>>> success >>>> homescreen
+  bool hasConfigurationBeenDone = false;
 
   // variables to store the username and user password
   String userName = "";
@@ -94,46 +98,43 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
         fontSize: 16.0);
   }
 
-  //function to display the configure screen
-  Widget configureScreen(TabController tabController) {
-    return isConfigurationDone
-        ? Homescreen(tabController)
-        : configureScreenDisplay();
-  }
-
   // function to display the configure button
-  Widget configureScreenDisplay() {
+  Widget configuringWindow() {
     return Container(
       height: MediaQuery.of(context).size.height * 1,
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
           Container(
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.7,
             width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(
+                  bottom: Radius.elliptical(
+                      MediaQuery.of(context).size.width * 3, 300)),
+              gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.purple, Colors.orange]),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.17,
                   width: MediaQuery.of(context).size.width * 0.3,
                   decoration: const BoxDecoration(color: Colors.transparent),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.photo_camera,
-                        size: 65,
-                        color: mainColor,
-                      ),
+                    children: const [
+                      Icon(Icons.photo_camera, size: 65, color: Colors.white),
                       Text(
                         "Choose Photo",
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
-                            color: mainColor,
+                            color: Colors.white,
                             fontSize: 15),
                       ),
                     ],
@@ -149,33 +150,31 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                         userName = value;
                       });
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       isDense: true,
-                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                       prefixIcon: Opacity(
                         opacity: 0.5,
                         child: Icon(
                           Icons.person,
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5)),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
                         borderSide: BorderSide(
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5)),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
                         borderSide: BorderSide(
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       hintText: "Username",
                       hintStyle: TextStyle(
-                          color: mainColor,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontSize: 13,
                           fontWeight: FontWeight.w100),
@@ -192,76 +191,77 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
                         userPassword = value;
                       });
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       isDense: true,
-                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                       prefixIcon: Opacity(
                         opacity: 0.5,
                         child: Icon(
                           Icons.password,
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5)),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
                         borderSide: BorderSide(
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5)),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
                         borderSide: BorderSide(
-                          color: mainColor,
+                          color: Colors.black,
                         ),
                       ),
                       hintText: "Password",
                       hintStyle: TextStyle(
-                          color: mainColor,
+                          color: Colors.black,
                           fontStyle: FontStyle.italic,
                           fontSize: 13,
                           fontWeight: FontWeight.w100),
                     ),
                   ),
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               ],
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
           Container(
             height: MediaQuery.of(context).size.height * 0.12,
             width: MediaQuery.of(context).size.width * 1,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: GestureDetector(
-              onTap: (() {
-                recorduserDetails();
-                readUserDetails();
-                displayToast("App Configured Successfully");
-                ConfigurationLogic()
-                    .predefineKeyValue(); // predefine the key value to "0" during configuration
-                ConfigurationLogic().readData();
-                setState(() {
-                  isConfiguredbuttonState =
-                      false; // set the state to false meaning that configuration has been done
-                });
-              }),
-              child: CircleAvatar(
-                radius: 37,
-                backgroundColor: borderColor,
-                child: CircleAvatar(
-                  radius: 33,
-                  backgroundColor: bodyColor,
-                  child: Text(
-                    "CONFIGURE",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: textColor,
-                        fontSize: 10),
-                  ),
-                ),
-              ),
-            ),
+                onTap: (() {
+                  /// record the user details to the database
+                  recorduserDetails();
+
+                  /// read user details from the database
+                  readUserDetails();
+
+                  /// write the default key value for database which is "0" at index "0"
+                  ConfigurationLogic().predefineKeyValue();
+
+                  /// read datastored in index "0" which is the key (DEBUGGING FUNCTION)
+                  ConfigurationLogic().readData();
+                }),
+                child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                            colors: [
+                              color1,
+                              color2,
+                            ],
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight)),
+                    child: const CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Text('CONFIGURE',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500))))),
           ),
         ],
       ),
@@ -269,7 +269,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
   }
 
   // function to display the configure success screen
-  Widget configureSuccessScreen() {
+  Widget successConfiguring() {
     return Container(
       height: MediaQuery.of(context).size.height * 1,
       width: MediaQuery.of(context).size.width * 1,
@@ -314,24 +314,26 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
     );
   }
 
-  // function to record the user name and password
+  /// function to record the username and password
+  /// username and password come from the textfields
+  /// they are passed to this method in order to be recorded to the local database using shared preferences
   void recorduserDetails() async {
-    // declare the instance of Shared Preference
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    // record the values to the defined database as key-value pair
     sharedPreferences.setString("Username", userName);
     sharedPreferences.setString("Userpassword", userPassword);
     displayToast("Details Saved");
   }
 
-  // function to show the details stored in the database created by shared preference
+  /// function to show the details stored in the database created by shared preference
+  /// this is a debugging function and has no effect on the functioning of the system
+  /// SHOULD BE DELETED BEFORE LAUNCH
   void readUserDetails() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     displayToast(sharedPreferences.getString("Username").toString());
     displayToast(sharedPreferences.getString("Userpassword").toString());
   }
 
-  /******************************************************************************************************************************** */
+  /// ************************************************THIS IS THE HOMESCREEN******************************************************************************
 
   // function to display the homescreen
   Widget Homescreen(TabController tabController) {
@@ -1147,9 +1149,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
         decoration: const BoxDecoration(color: Colors.transparent),
         child: SingleChildScrollView(
           child: Center(
-              child: isConfiguredbuttonState
-                  ? configureScreen(tabController)
-                  : configureSuccessScreen()),
+              child: hasConfigurationBeenDone
+                  ? Homescreen(tabController)
+                  : configuringWindow()),
         ),
       ),
     ));

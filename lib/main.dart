@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mysecretary/SplashScreen/splashscreen.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -24,9 +25,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false, home: SplashScreen());
+        debugShowCheckedModeBanner: false, home: OpeningScreen());
   }
 }
+
+
+
+
+
+
+
+
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
