@@ -55,7 +55,12 @@ class _ProfileState extends State<Profile> {
         body: Container(
       height: MediaQuery.of(context).size.height * 1,
       width: MediaQuery.of(context).size.width * 1,
-      decoration: BoxDecoration(color: mainColor),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.purple, Colors.orange]),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -176,8 +181,8 @@ class _ProfileState extends State<Profile> {
                         saveDetails(userNameTextField);
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: mainColor,
+                          backgroundColor: Colors.white,
+                          foregroundColor: mainColor,
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(30)))),

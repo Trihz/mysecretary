@@ -1,12 +1,13 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
 import 'package:mysecretary/configuration/configuration_logic.dart';
-import 'package:mysecretary/gradienticon.dart';
+import 'package:mysecretary/configuration/configuration_success.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
+import 'package:mysecretary/newtask/newtask_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
 import 'package:mysecretary/profile.dart';
@@ -38,12 +39,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
   Color color1 = Colors.purple;
   Color color2 = Colors.orange;
 
-  /// this variable stores the status of whether configuration has been done or not
-  /// it controls the navigation of the app during starting
-  /// if configuration has been done the the navigation is from the splashscreen >>>> homescreen
-  /// if configuration has not been done then the flow is from the splashscreen >>>> configuringWindow >>>> success >>>> homescreen
-  bool hasConfigurationBeenDone = false;
-
   // variables to store the username and user password
   String userName = "";
   String userPassword = "";
@@ -73,19 +68,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
   HashMap<int, List<String>> tasksHashMap = HashMap();
   HashMap<int, List<String>> todaysTasksHashMap = HashMap();
 
-  /* 
-      function to get username 
-      - achieved through shared preferences
-      - stored in the local storage
-  */
-  void getUsername() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final userNameStorage = sharedPreferences.getString("Username");
-    setState(() {
-      userName = userNameStorage.toString();
-    });
-  }
-
   // function to display a toast message
   void displayToast(String message) {
     Fluttertoast.showToast(
@@ -98,8 +80,40 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
         fontSize: 16.0);
   }
 
+  /// function to record the username and password
+  /// username and password come from the textfields
+  /// they are passed to this method in order to be recorded to the local database using shared preferences
+  void recorduserDetails() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("Username", userName);
+    sharedPreferences.setString("Userpassword", userPassword);
+    displayToast("Details Saved");
+  }
+
+  /// function to update the configuration state to true when the user clicks the configure button
+  /// this isConfigured variable is then read at after the splash screen to determine whether the configuratio has been done or not
+  void recordConfigurationStatus() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setBool("isConfigured", true);
+  }
+
+  /// function to read the configuration state and assign it to the "hasConfigurationBeenDone" variable
+  void readConfigurationStatus() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    displayToast(sharedPreferences.getBool("isConfigured").toString());
+  }
+
+  /// function to show the details stored in the database created by shared preference
+  /// this is a debugging function and has no effect on the functioning of the system
+  /// SHOULD BE DELETED BEFORE LAUNCH
+  void readUserDetails() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    displayToast(sharedPreferences.getString("Username").toString());
+    displayToast(sharedPreferences.getString("Userpassword").toString());
+  }
+
   // function to display the configure button
-  Widget configuringWindow() {
+  Widget configuringWindow(TabController tabController) {
     return Container(
       height: MediaQuery.of(context).size.height * 1,
       width: MediaQuery.of(context).size.width * 1,
@@ -233,17 +247,25 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
             decoration: const BoxDecoration(color: Colors.transparent),
             child: GestureDetector(
                 onTap: (() {
-                  /// record the user details to the database
+                  /// record the user details
                   recorduserDetails();
 
-                  /// read user details from the database
+                  /// record the configuration status
+                  recordConfigurationStatus();
+
+                  /// read user details
                   readUserDetails();
 
-                  /// write the default key value for database which is "0" at index "0"
-                  ConfigurationLogic().predefineKeyValue();
+                  /// read configuration status
+                  readConfigurationStatus();
 
-                  /// read datastored in index "0" which is the key (DEBUGGING FUNCTION)
-                  ConfigurationLogic().readData();
+                  /// predefine the key value for the tasks (Hive)
+                  NewTaskLogic().predefineKeyValue();
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ConfigurationSuccess()));
                 }),
                 child: Container(
                     decoration: BoxDecoration(
@@ -268,870 +290,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
     );
   }
 
-  // function to display the configure success screen
-  Widget successConfiguring() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 1,
-      width: MediaQuery.of(context).size.width * 1,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.45,
-            width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.15,
-            width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
-            child: CircleAvatar(
-              radius: 37,
-              backgroundColor: Colors.white,
-              child: Image.asset("assets/checked.png"),
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
-          ),
-          Container(
-              height: MediaQuery.of(context).size.height * 0.1,
-              width: MediaQuery.of(context).size.width * 1,
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Center(
-                child: Text(
-                  "Restart the App to save changes",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: mainColor,
-                      fontSize: 17),
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-
-  /// function to record the username and password
-  /// username and password come from the textfields
-  /// they are passed to this method in order to be recorded to the local database using shared preferences
-  void recorduserDetails() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("Username", userName);
-    sharedPreferences.setString("Userpassword", userPassword);
-    displayToast("Details Saved");
-  }
-
-  /// function to show the details stored in the database created by shared preference
-  /// this is a debugging function and has no effect on the functioning of the system
-  /// SHOULD BE DELETED BEFORE LAUNCH
-  void readUserDetails() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    displayToast(sharedPreferences.getString("Username").toString());
-    displayToast(sharedPreferences.getString("Userpassword").toString());
-  }
-
-  /// ************************************************THIS IS THE HOMESCREEN******************************************************************************
-
-  // function to display the homescreen
-  Widget Homescreen(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 1,
-      width: MediaQuery.of(context).size.width * 1,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [upperContainer(), lowerContainer(tabController)],
-      ),
-    );
-  }
-
-  // function to show the lower containe
-  Widget upperContainer() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.45,
-      width: MediaQuery.of(context).size.width * 1,
-      margin: const EdgeInsets.only(right: 3, left: 3),
-      decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 41, 143, 174),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15))),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          safeContainer(),
-          firstContainer(),
-          secondContainer(),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          scrollingDates(),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01)
-        ],
-      ),
-    );
-  }
-
-  // Widget to show the upper container
-  Widget lowerContainer(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.55,
-      width: MediaQuery.of(context).size.width * 1,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Column(
-        children: [thirdContainer(tabController), fourthContainer()],
-      ),
-    );
-  }
-
-  // function to display safe container
-  Widget safeContainer() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.05,
-    );
-  }
-
-  // function to display the first container
-  Widget firstContainer() {
-    return Container(
-        height: MediaQuery.of(context).size.height * 0.1,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: profile());
-  }
-
-  // function to display the first container
-  Widget secondContainer() {
-    return Container(
-        height: MediaQuery.of(context).size.height * 0.2,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: Center(child: groupings()));
-  }
-
-  // function to display the third container
-  Widget thirdContainer(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.47,
-      width: MediaQuery.of(context).size.width * 1,
-      padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [todaysTasksTitle(tabController), todaysTasks(tabController)],
-      ),
-    );
-  }
-
-  // function to display the fourth container
-  Widget fourthContainer() {
-    return Container(
-        height: MediaQuery.of(context).size.height * 0.08,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: floatingButton());
-  }
-
-  // function to display the profile
-  Widget profile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.08,
-          width: MediaQuery.of(context).size.width * 0.5,
-          decoration: const BoxDecoration(color: Colors.transparent),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Text(
-                    "Hello $userName",
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20),
-                  )),
-              Container(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Text(
-                    todayDate,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 12),
-                  )),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Profile()));
-          },
-          child: Container(
-            height: 60,
-            width: 60,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: AssetImage("assets/steve.jpg"), fit: BoxFit.fill),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // function to display the add button
-  Widget groupings() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.17,
-      width: MediaQuery.of(context).size.width * 0.9,
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.04,
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: const Center(
-              child: Text(
-                "GROUPINGS",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Class()));
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/class.png")),
-                        const Text(
-                          "Class",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Personal()));
-                  }),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/personal.png")),
-                        const Text(
-                          "Personal",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Business()));
-                  }),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/business.png")),
-                        const Text(
-                          "Business",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01)
-        ],
-      ),
-    );
-  }
-
-  // function to show scrolling dates
-  Widget scrollingDates() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width * 0.7,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: ListView.builder(
-          itemCount: date.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: ((context, index) {
-            return GestureDetector(
-              onTap: (() {
-                String date_clicked = HomeScreenLogic()
-                    .buildScrollingDate(date[index].toString());
-                displayToast(date_clicked);
-                tasksForDateTappedHashMap = HomeScreenLogic()
-                    .readTasksForDayTapped(
-                        date_clicked); // initialize tasks for date tapped
-                showSnackbBar();
-              }),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.06,
-                width: MediaQuery.of(context).size.width * 0.13,
-                margin:
-                    const EdgeInsets.only(right: 5, left: 5, top: 5, bottom: 5),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(3))),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "Date",
-                      style: TextStyle(
-                          color: mainColor,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 13),
-                    ),
-                    Text(
-                      date[index].toString(),
-                      style: TextStyle(
-                          color: mainColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          })),
-    );
-  }
-
-  // function to display today's tasks
-  Widget todaysTasksTitle(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width * 0.9,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.08,
-            width: MediaQuery.of(context).size.width * 0.6,
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(1, 1),
-                      blurRadius: 1,
-                      spreadRadius: 1)
-                ],
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(5))),
-            child: TabBar(
-                labelColor: Colors.white,
-                unselectedLabelColor: mainColor,
-                controller: tabController,
-                indicator: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  color: mainColor,
-                ),
-                tabs: const [
-                  Tab(
-                    child: Text(
-                      "ALL TASKS",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "TODAY",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
-                    ),
-                  ),
-                ]),
-          ),
-          Container(
-              height: MediaQuery.of(context).size.height * 0.1,
-              width: MediaQuery.of(context).size.width * 0.1,
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    tasksHashMap = HomeScreenLogic().readAllTasksData();
-                    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
-                  });
-                },
-                child: Opacity(
-                  opacity: 0.9,
-                  child: Icon(
-                    Icons.refresh,
-                    size: 25,
-                    color: mainColor,
-                  ),
-                ),
-              ))
-        ],
-      ),
-    );
-  }
-
-  // function to display the today's tasks container
-  Widget todaysTasks(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.37,
-      width: MediaQuery.of(context).size.width * 1,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: TabBarView(
-        controller: tabController,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
-            child: ListView.builder(
-                itemCount: tasksHashMap.length,
-                itemBuilder: ((context, index) {
-                  return GestureDetector(
-                    onTap: (() {
-                      String name = tasksHashMap[index + 1]![0].toString();
-                      String definition =
-                          tasksHashMap[index + 1]![1].toString();
-                      String start = tasksHashMap[index + 1]![2].toString();
-                      String end = tasksHashMap[index + 1]![3].toString();
-                      String group = tasksHashMap[index + 1]![4].toString();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TaskDetailsUI(
-                                  name, definition, start, end, group)));
-                    }),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.06,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      margin:
-                          const EdgeInsets.only(bottom: 10, left: 5, right: 5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(1, 1),
-                              blurRadius: 1,
-                              spreadRadius: 1)
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.08,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Icon(
-                              Icons.notifications_active,
-                              color: mainColor,
-                              size: 20,
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.08,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                tasksHashMap[index + 1]![0].toString(),
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.07,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: mainColor,
-                              child: GestureDetector(
-                                child: CircleAvatar(
-                                  radius: 11,
-                                  backgroundColor: Colors.white,
-                                  child: Opacity(
-                                    opacity: 0.5,
-                                    child: Icon(Icons.star,
-                                        color: uncompletedTaskColor, size: 13),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                })),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 1,
-            decoration: const BoxDecoration(color: Colors.transparent),
-            child: ListView.builder(
-                itemCount: todaysTasksHashMap.length,
-                itemBuilder: ((context, index) {
-                  return GestureDetector(
-                    onTap: (() {
-                      String name =
-                          todaysTasksHashMap[index + 1]![0].toString();
-                      String definition =
-                          todaysTasksHashMap[index + 1]![1].toString();
-                      String start =
-                          todaysTasksHashMap[index + 1]![2].toString();
-                      String end = todaysTasksHashMap[index + 1]![3].toString();
-                      String group = tasksHashMap[index + 1]![4].toString();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TaskDetailsUI(
-                                  name, definition, start, end, group)));
-                    }),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      margin:
-                          const EdgeInsets.only(bottom: 10, left: 5, right: 5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(1, 1),
-                              blurRadius: 1,
-                              spreadRadius: 1)
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.08,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Icon(
-                              Icons.notifications_active,
-                              color: mainColor,
-                              size: 20,
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.08,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                todaysTasksHashMap[index + 1]![0].toString(),
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: mainColor,
-                              child: const CircleAvatar(
-                                radius: 7,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                })),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /*
-      function to show the snackbar
-      - the snackbar contains tasks specific for the pressed date
-   */
-  void showSnackbBar() {
-    final snackBar = SnackBar(
-      backgroundColor: mainColor,
-      margin: const EdgeInsets.only(right: 3, left: 3),
-      duration: const Duration(days: 365),
-      dismissDirection: DismissDirection.up,
-      behavior: SnackBarBehavior.floating,
-      elevation: 40,
-      content: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: ListView.builder(
-            itemCount: tasksForDateTappedHashMap.length,
-            itemBuilder: ((context, index) {
-              return GestureDetector(
-                onTap: () {
-                  String name = tasksHashMap[index + 1]![0].toString();
-                  String definition = tasksHashMap[index + 1]![1].toString();
-                  String start = tasksHashMap[index + 1]![2].toString();
-                  String end = tasksHashMap[index + 1]![3].toString();
-                  String group = tasksHashMap[index + 1]![4].toString();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TaskDetailsUI(
-                              name, definition, start, end, group)));
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  margin: const EdgeInsets.only(top: 15),
-                  decoration: BoxDecoration(
-                    color: mainColor,
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Colors.black,
-                          offset: Offset(1, 1),
-                          blurRadius: 1,
-                          spreadRadius: 1)
-                    ],
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.04,
-                        width: MediaQuery.of(context).size.width * 0.08,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: const Icon(
-                          Icons.notifications_active,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Center(
-                            child: Text(
-                              tasksForDateTappedHashMap[index + 1]![0]
-                                  .toString(),
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                        width: MediaQuery.of(context).size.width * 0.05,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            radius: 7,
-                            backgroundColor: mainColor,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            })),
-      ),
-      action: SnackBarAction(
-        label: "Dismiss",
-        textColor: Colors.white,
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  // function to display the add button
-  Widget floatingButton() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width * 1,
-      padding: const EdgeInsets.only(right: 30, left: 30),
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Align(
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () {
-            addNewTask();
-          },
-          child: const CircleAvatar(
-              radius: 20,
-              backgroundColor: Color.fromARGB(255, 41, 143, 174),
-              child: Opacity(
-                opacity: 0.7,
-                child: Icon(
-                  Icons.add,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-      ),
-    );
-  }
-
-  // function to add new task
-  void addNewTask() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const NewTask()));
-  }
-
   @override
   void initState() {
-    getUsername(); // initialize the username
-    todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
-    /*todaysTasksHashMap =
-        HomeScreenLogic().readTodaysData(); // initialize today's tasks hashmap
-    tasksHashMap = HomeScreenLogic()
-        .readAllTasksData(); // initialize all the tasks hashmap*/
+    Hive.openBox("TasksDatabase");
     super.initState();
   }
 
@@ -1148,10 +309,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen>
         width: MediaQuery.of(context).size.width * 1,
         decoration: const BoxDecoration(color: Colors.transparent),
         child: SingleChildScrollView(
-          child: Center(
-              child: hasConfigurationBeenDone
-                  ? Homescreen(tabController)
-                  : configuringWindow()),
+          child: Center(child: configuringWindow(tabController)),
         ),
       ),
     ));

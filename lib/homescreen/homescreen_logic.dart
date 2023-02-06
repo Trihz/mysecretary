@@ -37,7 +37,7 @@ class HomeScreenLogic {
       dayTapped = "0$dayTapped";
     }
     String builtDate = DateFormat("yyyy-MM-$dayTapped").format(DateTime.now());
-    
+
     return builtDate;
   }
 

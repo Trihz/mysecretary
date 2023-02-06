@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OpeningScreen extends StatefulWidget {
   const OpeningScreen({super.key});
@@ -51,12 +52,12 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   void initState() {
     super.initState();
+    /*SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setBool("isConfigured", false);*/
     Timer(
         const Duration(milliseconds: 5700),
-        () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ConfigurationScreen())));
+        () => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen())));
   }
 
   @override

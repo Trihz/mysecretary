@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
+import 'package:mysecretary/gradienticon.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
@@ -26,11 +27,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // variable to store the color for completed tasks
   Color completedTaskColor = const Color.fromARGB(255, 41, 143, 174);
 
+  // varaibles to store the main screen gradient colors
+  Color color1 = Colors.purple;
+  Color color2 = Colors.orange;
+
   // variable to store the username
   String userName = "";
 
   // variable to store the date for today
   String todayDate = "";
+
+  /// boolean variable to store the status of configuration
+  bool isConfigured = false;
+
   // a list to define the dates of the month
   List date = [
     "1",
@@ -53,11 +62,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HashMap<int, List<String>> tasksHashMap = HashMap();
   HashMap<int, List<String>> todaysTasksHashMap = HashMap();
 
-  /* 
-      function to get username 
-      - achieved through shared preferences
-      - stored in the local storage
-  */
+  /// function to get username
+  /// achieved through shared preferences
+  /// stored in the local storage
   void getUsername() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final userNameStorage = sharedPreferences.getString("Username");
@@ -78,10 +85,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         fontSize: 16.0);
   }
 
-  /*
-      function to show the snackbar
-      - the snackbar contains tasks specific for the pressed date
-   */
+  /// function to show the snackbar
+  /// the snackbar contains tasks specific for the pressed date
   void showSnackbBar() {
     final snackBar = SnackBar(
       backgroundColor: mainColor,
@@ -114,16 +119,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   height: MediaQuery.of(context).size.height * 0.06,
                   width: MediaQuery.of(context).size.width * 0.8,
                   margin: const EdgeInsets.only(top: 15),
-                  decoration: BoxDecoration(
-                    color: mainColor,
-                    boxShadow: const [
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.purple, Colors.orange]),
+                    boxShadow: [
                       BoxShadow(
                           color: Colors.black,
                           offset: Offset(1, 1),
                           blurRadius: 1,
                           spreadRadius: 1)
                     ],
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -194,7 +202,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       width: MediaQuery.of(context).size.width * 1,
       margin: const EdgeInsets.only(right: 3, left: 3),
       decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 41, 143, 174),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.purple, Colors.orange]),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(15),
               bottomRight: Radius.circular(15))),
@@ -219,32 +230,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
-        children: [fourthContainer()],
+        children: [thirdContainer(tabController), fourthContainer()],
       ),
     );
-  }
-
-  // function to display the third container
-  Widget thirdContainer(TabController tabController) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.47,
-      width: MediaQuery.of(context).size.width * 1,
-      padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [todaysTasksTitle(tabController), todaysTasks(tabController)],
-      ),
-    );
-  }
-
-  // function to display the fourth container
-  Widget fourthContainer() {
-    return Container(
-        height: MediaQuery.of(context).size.height * 0.08,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: floatingButton());
   }
 
   // function to display safe container
@@ -272,174 +260,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Center(child: groupings()));
   }
 
-  // function to display the add button
-  Widget groupings() {
+  // function to display the third container
+  Widget thirdContainer(TabController tabController) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.17,
-      width: MediaQuery.of(context).size.width * 0.9,
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
+      height: MediaQuery.of(context).size.height * 0.47,
+      width: MediaQuery.of(context).size.width * 1,
+      padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.04,
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: const Center(
-              child: Text(
-                "GROUPINGS",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Class()));
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/class.png")),
-                        const Text(
-                          "Class",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Personal()));
-                  }),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/personal.png")),
-                        const Text(
-                          "Personal",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Business()));
-                  }),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 41, 143, 174),
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Image.asset("assets/business.png")),
-                        const Text(
-                          "Business",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01)
-        ],
+        children: [todaysTasksTitle(tabController), todaysTasks(tabController)],
       ),
     );
   }
 
-  /// function to display the profile
+  // function to display the fourth container
+  Widget fourthContainer() {
+    return Container(
+        height: MediaQuery.of(context).size.height * 0.08,
+        width: MediaQuery.of(context).size.width * 1,
+        decoration: const BoxDecoration(color: Colors.transparent),
+        child: floatingButton());
+  }
+
+  // function to display the profile
   Widget profile() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -495,7 +339,183 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // function to show scrolling dates
+  // function to display the add button
+  Widget groupings() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.17,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.04,
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+            ),
+            child: const Center(
+              child: Text(
+                "GROUPINGS",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Class()));
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.purple, Colors.orange]),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 1,
+                            spreadRadius: 1)
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(3)),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Image.asset("assets/class.png")),
+                        const Text(
+                          "Class",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Personal()));
+                  }),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.purple, Colors.orange]),
+                      borderRadius: BorderRadius.all(Radius.circular(3)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 1,
+                            spreadRadius: 1)
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Image.asset("assets/personal.png")),
+                        const Text(
+                          "Personal",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Business()));
+                  }),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.purple, Colors.orange]),
+                      borderRadius: BorderRadius.all(Radius.circular(3)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 1,
+                            spreadRadius: 1)
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: Image.asset("assets/business.png")),
+                        const Text(
+                          "Business",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01)
+        ],
+      ),
+    );
+  }
+
+  /// function to show scrolling dates
   Widget scrollingDates() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.08,
@@ -526,17 +546,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
+                    const Text(
                       "Date",
                       style: TextStyle(
-                          color: mainColor,
-                          fontWeight: FontWeight.w300,
+                          color: Colors.orange,
+                          fontWeight: FontWeight.w600,
                           fontSize: 13),
                     ),
                     Text(
                       date[index].toString(),
-                      style: TextStyle(
-                          color: mainColor,
+                      style: const TextStyle(
+                          color: Colors.orange,
                           fontWeight: FontWeight.w400,
                           fontSize: 13),
                     ),
@@ -545,35 +565,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             );
           })),
-    );
-  }
-
-  // function to display the add button
-  Widget floatingButton() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width * 1,
-      padding: const EdgeInsets.only(right: 30, left: 30),
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Align(
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () {
-            addNewTask();
-          },
-          child: const CircleAvatar(
-              radius: 20,
-              backgroundColor: Color.fromARGB(255, 41, 143, 174),
-              child: Opacity(
-                opacity: 0.7,
-                child: Icon(
-                  Icons.add,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-      ),
     );
   }
 
@@ -602,12 +593,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             child: TabBar(
                 labelColor: Colors.white,
-                unselectedLabelColor: mainColor,
+                unselectedLabelColor: Colors.orange,
                 controller: tabController,
                 indicator: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  color: mainColor,
-                ),
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    gradient: LinearGradient(colors: [
+                      color1,
+                      color2,
+                    ], begin: Alignment.bottomLeft, end: Alignment.topRight)),
                 tabs: const [
                   Tab(
                     child: Text(
@@ -627,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           Container(
               height: MediaQuery.of(context).size.height * 0.1,
-              width: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width * 0.15,
               padding: const EdgeInsets.only(left: 10, right: 10),
               decoration: const BoxDecoration(color: Colors.transparent),
               child: GestureDetector(
@@ -639,10 +632,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 },
                 child: Opacity(
                   opacity: 0.9,
-                  child: Icon(
+                  child: GradientIcon(
                     Icons.refresh,
-                    size: 25,
-                    color: mainColor,
+                    25,
+                    const LinearGradient(
+                      colors: [
+                        Colors.purple,
+                        Colors.orange,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
                 ),
               ))
@@ -705,10 +705,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width * 0.08,
                             decoration:
                                 const BoxDecoration(color: Colors.transparent),
-                            child: Icon(
+                            child: GradientIcon(
                               Icons.notifications_active,
-                              color: mainColor,
-                              size: 20,
+                              20,
+                              const LinearGradient(
+                                colors: [
+                                  Colors.purple,
+                                  Colors.orange,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                             ),
                           ),
                           Container(
@@ -734,7 +741,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 const BoxDecoration(color: Colors.transparent),
                             child: CircleAvatar(
                               radius: 20,
-                              backgroundColor: mainColor,
+                              backgroundColor: Colors.orange,
                               child: GestureDetector(
                                 child: CircleAvatar(
                                   radius: 11,
@@ -801,10 +808,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width * 0.08,
                             decoration:
                                 const BoxDecoration(color: Colors.transparent),
-                            child: Icon(
+                            child: GradientIcon(
                               Icons.notifications_active,
-                              color: mainColor,
-                              size: 20,
+                              20,
+                              const LinearGradient(
+                                colors: [
+                                  Colors.purple,
+                                  Colors.orange,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                             ),
                           ),
                           Container(
@@ -828,10 +842,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width * 0.05,
                             decoration:
                                 const BoxDecoration(color: Colors.transparent),
-                            child: CircleAvatar(
+                            child: const CircleAvatar(
                               radius: 20,
-                              backgroundColor: mainColor,
-                              child: const CircleAvatar(
+                              backgroundColor: Colors.orange,
+                              child: CircleAvatar(
                                 radius: 7,
                                 backgroundColor: Colors.white,
                               ),
@@ -848,20 +862,70 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // function to display the add button
+  Widget floatingButton() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.08,
+      width: MediaQuery.of(context).size.width * 1,
+      padding: const EdgeInsets.only(right: 30, left: 30),
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Align(
+        alignment: Alignment.center,
+        child: GestureDetector(
+            onTap: () {
+              addNewTask();
+            },
+            child: Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(colors: [
+                      color1,
+                      color2,
+                    ], begin: Alignment.bottomLeft, end: Alignment.topRight)),
+                child: const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: Icon(
+                    Icons.add,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                ))),
+      ),
+    );
+  }
+
   // function to add new task
-  void addNewTask() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const NewTask()));
+  void addNewTask() async {
+    /// set the configuration status by reading the value stored locally
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      isConfigured = sharedPreferences.getBool("isConfigured")!;
+    });
+
+    if (isConfigured == false) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const ConfigurationScreen()));
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const NewTask()));
+    }
   }
 
   @override
   void initState() {
-    //getUsername(); // initialize the username
-    //todayDate = HomeScreenLogic().getTodaysDate(); // initiliaze today's date
-    /*todaysTasksHashMap =
-        HomeScreenLogic().readTodaysData(); // initialize today's tasks hashmap
-    tasksHashMap = HomeScreenLogic()
-        .readAllTasksData(); // initialize all the tasks hashmap*/
+    /// initialize the username
+    getUsername();
+
+    /// initiliaze today's date
+    todayDate = HomeScreenLogic().getTodaysDate();
+
+    /// initialize today's tasks hashmap
+    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+
+    /// initialize all the tasks hashmap
+    tasksHashMap = HomeScreenLogic().readAllTasksData();
 
     super.initState();
   }

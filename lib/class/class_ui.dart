@@ -30,8 +30,8 @@ class _ClassState extends State<Class> {
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20))),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -51,11 +51,11 @@ class _ClassState extends State<Class> {
       height: MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 1,
       decoration: const BoxDecoration(color: Colors.white),
-      child: Center(
+      child: const Center(
         child: Text(
           "CLASS TASKS",
           style: TextStyle(
-              color: mainColor, fontWeight: FontWeight.w600, fontSize: 20),
+              color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
     );
@@ -66,17 +66,17 @@ class _ClassState extends State<Class> {
     return Container(
         height: MediaQuery.of(context).size.height * 0.04,
         width: MediaQuery.of(context).size.width * 0.3,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: ElevatedButton(
-          onPressed: (() {}),
-          style: ElevatedButton.styleFrom(
-              primary: Colors.white,
-              onPrimary: mainColor,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)))),
-          child: const Text(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.purple, Colors.orange]),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: const Center(
+          child: Text(
             "REFRESH",
-            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+            style: TextStyle(
+                fontWeight: FontWeight.w700, fontSize: 13, color: Colors.white),
           ),
         ));
   }
@@ -94,16 +94,19 @@ class _ClassState extends State<Class> {
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width * 0.89,
                 margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: mainColor,
-                  boxShadow: const [
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Colors.purple, Colors.orange]),
+                  boxShadow: [
                     BoxShadow(
                         color: Colors.black,
                         offset: Offset(1, 1),
                         blurRadius: 1,
                         spreadRadius: 1)
                   ],
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                 ),
                 child: Column(
                   children: [
@@ -162,18 +165,19 @@ class _ClassState extends State<Class> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text(
+                          const Text(
                             "Status:",
                             style: TextStyle(
-                                color: mainColor,
+                                color: Colors.black,
                                 fontWeight: FontWeight.w300,
                                 fontSize: 13),
                           ),
                           Text(
                             computeTaskStatusIndicator(
                                 classTasksHashMap[index + 1]![3]),
-                            style: TextStyle(
-                                color: mainColor, fontWeight: FontWeight.w500),
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -209,7 +213,12 @@ class _ClassState extends State<Class> {
         body: Container(
       height: MediaQuery.of(context).size.height * 1,
       width: MediaQuery.of(context).size.width * 1,
-      decoration: BoxDecoration(color: mainColor),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.purple, Colors.orange]),
+      ),
       child: Column(
         children: [upperContainer(), lowerContainer()],
       ),

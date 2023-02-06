@@ -58,8 +58,8 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
               boxShadow: [
                 BoxShadow(
                     color: Colors.grey,
-                    offset: Offset(2, 2),
-                    blurRadius: 5,
+                    offset: Offset(1, 1),
+                    blurRadius: 1,
                     spreadRadius: 1)
               ],
             ),
@@ -78,14 +78,14 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           decoration:
                               const BoxDecoration(color: Colors.transparent),
-                          child: Align(
+                          child: const Align(
                             alignment: Alignment.center,
                             child: Text(
                               "TASK NAME",
                               style: TextStyle(
-                                  color: mainColor,
+                                  color: Colors.black,
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.w200),
                             ),
                           )),
                       Container(
@@ -100,8 +100,8 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                                 widget.taskName,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700),
                               ),
                             ),
                           ))
@@ -109,7 +109,7 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                   ),
                 ),
                 Divider(
-                  color: mainColor,
+                  color: Colors.transparent,
                   thickness: 0.5,
                   height: 3,
                   indent: MediaQuery.of(context).size.width * 0,
@@ -127,14 +127,14 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           decoration:
                               const BoxDecoration(color: Colors.transparent),
-                          child: Align(
+                          child: const Align(
                             alignment: Alignment.center,
                             child: Text(
                               "TASK GROUP",
                               style: TextStyle(
-                                  color: mainColor,
+                                  color: Colors.black,
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.w200),
                             ),
                           )),
                       Container(
@@ -149,8 +149,8 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                                 widget.taskGroup,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700),
                               ),
                             ),
                           ))
@@ -169,14 +169,14 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                           width: MediaQuery.of(context).size.width * 0.9,
                           decoration:
                               const BoxDecoration(color: Colors.transparent),
-                          child: Align(
+                          child: const Align(
                             alignment: Alignment.center,
                             child: Text(
                               "TASK DEFINITION",
                               style: TextStyle(
-                                  color: mainColor,
+                                  color: Colors.black,
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.w200),
                             ),
                           )),
                       Container(
@@ -192,8 +192,8 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                                 widget.taskDefinition,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700),
                               ),
                             ),
                           ))
@@ -215,13 +215,13 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                             width: MediaQuery.of(context).size.width * 0.4,
                             decoration:
                                 const BoxDecoration(color: Colors.transparent),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 "START DATE",
                                 style: TextStyle(
-                                    color: mainColor,
+                                    color: Colors.black,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w200),
                               ),
                             ),
                           ),
@@ -230,13 +230,13 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                             width: MediaQuery.of(context).size.width * 0.4,
                             decoration:
                                 const BoxDecoration(color: Colors.transparent),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 "END DATE",
                                 style: TextStyle(
-                                    color: mainColor,
+                                    color: Colors.black,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w200),
                               ),
                             ),
                           ),
@@ -256,7 +256,7 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400),
+                                    fontWeight: FontWeight.w700),
                               ),
                             ),
                           ),
@@ -271,7 +271,7 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400),
+                                    fontWeight: FontWeight.w700),
                               ),
                             ),
                           ),
@@ -286,14 +286,21 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
           Container(
             height: MediaQuery.of(context).size.height * 0.05,
             width: MediaQuery.of(context).size.width * 0.4,
-            decoration: const BoxDecoration(color: Colors.transparent),
-            child: ElevatedButton(onPressed: () {},
-             style: ElevatedButton.styleFrom(
-              primary: mainColor,
-              onPrimary: Colors.white,
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30)))
-             ),
-             child: const Text("DELETE TASK",style: TextStyle(fontSize: 13),)),
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.purple, Colors.orange]),
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            child: const Center(
+              child: Text(
+                "DELETE TASK",
+                style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900),
+              ),
+            ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.1),
         ],

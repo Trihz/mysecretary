@@ -65,9 +65,12 @@ class _NewTaskState extends State<NewTask> {
       height: MediaQuery.of(context).size.height * 0.45,
       width: MediaQuery.of(context).size.width * 1,
       margin: const EdgeInsets.only(right: 2, left: 2),
-      decoration: BoxDecoration(
-          color: mainColor,
-          borderRadius: const BorderRadius.all(Radius.circular(5))),
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.purple, Colors.orange]),
+          borderRadius: BorderRadius.all(Radius.circular(5))),
       child: TableCalendar(
         focusedDay: today,
         daysOfWeekStyle: const DaysOfWeekStyle(
@@ -158,16 +161,19 @@ class _NewTaskState extends State<NewTask> {
             height: MediaQuery.of(context).size.height * 0.05,
             width: MediaQuery.of(context).size.width * 0.35,
             padding: const EdgeInsets.only(right: 20, left: 20),
-            decoration: BoxDecoration(
-              color: mainColor,
-              boxShadow: const [
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.purple, Colors.orange]),
+              boxShadow: [
                 BoxShadow(
                     color: Colors.transparent,
                     offset: Offset(1, 1),
                     blurRadius: 1,
                     spreadRadius: 1)
               ],
-              borderRadius: const BorderRadius.all(Radius.circular(2)),
+              borderRadius: BorderRadius.all(Radius.circular(2)),
             ),
             child: Center(
               child: Text(
@@ -191,16 +197,19 @@ class _NewTaskState extends State<NewTask> {
             height: MediaQuery.of(context).size.height * 0.05,
             width: MediaQuery.of(context).size.width * 0.35,
             padding: const EdgeInsets.only(right: 20, left: 20),
-            decoration: BoxDecoration(
-              color: mainColor,
-              boxShadow: const [
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.purple, Colors.orange]),
+              boxShadow: [
                 BoxShadow(
                     color: Colors.transparent,
                     offset: Offset(1, 1),
                     blurRadius: 1,
                     spreadRadius: 1)
               ],
-              borderRadius: const BorderRadius.all(Radius.circular(2)),
+              borderRadius: BorderRadius.all(Radius.circular(2)),
             ),
             child: Center(
               child: Text(
@@ -360,17 +369,20 @@ class _NewTaskState extends State<NewTask> {
             //NewTaskLogic().deleteDatabase();
           },
           style: ElevatedButton.styleFrom(
-              primary: mainColor,
-              onPrimary: Colors.white,
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)))),
-          child: const Text("SAVE")),
+          child: const Text(
+            "SAVE",
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+          )),
     );
   }
 
   @override
   void initState() {
-    var box = Hive.openBox("Tasks");
+    Hive.openBox("TasksDatabase");
     super.initState();
   }
 
