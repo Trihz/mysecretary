@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _ProfileState extends State<Profile> {
+class _SettingsState extends State<Settings> {
   // variable to store the main color
   Color mainColor = const Color.fromARGB(255, 41, 143, 174);
 

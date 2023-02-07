@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'dart:collection';
+import 'package:quiver/time.dart';
 
 class HomeScreenLogic {
   // referencing the already opened local
@@ -31,7 +32,7 @@ class HomeScreenLogic {
     return todayDate;
   }
 
-  // this function builds the date after a user taps the scrolling dayss
+  // this function builds the date after a user taps the scrolling days
   String buildScrollingDate(String dayTapped) {
     if (dayTapped.length == 1) {
       dayTapped = "0$dayTapped";
@@ -107,8 +108,24 @@ class HomeScreenLogic {
   /*
       function to return the number of days in the specified month
   */
-  String numberOfDaysInTheMonth() {
-    String days = "";
-    return days;
+  int numberOfDaysInTheMonth() {
+    int daysInTheMonth = 0;
+    String todaysYear = "";
+    String todaysMonth = "";
+    todaysYear = DateFormat("yyyy").format(DateTime.now());
+    todaysMonth = DateFormat("MM").format(DateTime.now());
+    daysInTheMonth = daysInMonth(int.parse(todaysYear), int.parse(todaysMonth));
+    displayToast(daysInTheMonth.toString());
+    return daysInTheMonth;
+  }
+
+  /// function to generate the days to be displayed in the scrolling dates
+  List generateScrollingDates() {
+    int days = HomeScreenLogic().numberOfDaysInTheMonth();
+    List scrollingDates = [];
+    for (int x = 1; x <= days; x++) {
+      scrollingDates.add(x);
+    }
+    return scrollingDates;
   }
 }

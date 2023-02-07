@@ -10,7 +10,7 @@ import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
-import 'package:mysecretary/profile.dart';
+import 'package:mysecretary/settings.dart';
 import 'package:mysecretary/tasksdetails/tasksdetails_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

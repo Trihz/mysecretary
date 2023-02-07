@@ -8,7 +8,7 @@ import 'package:mysecretary/gradienticon.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
-import 'package:mysecretary/profile.dart';
+import 'package:mysecretary/settings.dart';
 import 'package:mysecretary/tasksdetails/tasksdetails_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,21 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool isConfigured = false;
 
   // a list to define the dates of the month
-  List date = [
-    "1",
-    "2",
-    "3",
-    "04",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13"
-  ];
+  List dates = [];
 
   // variables to hold different types of tasks
   HashMap<int, List<String>> tasksForDateTappedHashMap = HashMap();
@@ -87,109 +73,121 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// function to show the snackbar
   /// the snackbar contains tasks specific for the pressed date
-  void showSnackbBar() {
+  void showSnackbBar(String dateClicked) {
     final snackBar = SnackBar(
-      backgroundColor: mainColor,
+      showCloseIcon: true,
+      backgroundColor: Colors.white,
       margin: const EdgeInsets.only(right: 3, left: 3),
       duration: const Duration(days: 365),
       dismissDirection: DismissDirection.up,
       behavior: SnackBarBehavior.floating,
       elevation: 40,
       content: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
+        height: MediaQuery.of(context).size.height * 0.5,
         width: MediaQuery.of(context).size.width * 1,
         decoration: const BoxDecoration(color: Colors.transparent),
-        child: ListView.builder(
-            itemCount: tasksForDateTappedHashMap.length,
-            itemBuilder: ((context, index) {
-              return GestureDetector(
-                onTap: () {
-                  String name = tasksHashMap[index + 1]![0].toString();
-                  String definition = tasksHashMap[index + 1]![1].toString();
-                  String start = tasksHashMap[index + 1]![2].toString();
-                  String end = tasksHashMap[index + 1]![3].toString();
-                  String group = tasksHashMap[index + 1]![4].toString();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TaskDetailsUI(
-                              name, definition, start, end, group)));
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  margin: const EdgeInsets.only(top: 15),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.purple, Colors.orange]),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black,
-                          offset: Offset(1, 1),
-                          blurRadius: 1,
-                          spreadRadius: 1)
-                    ],
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+        child: Column(
+          children: [
+            Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.width * 1,
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: Center(
+                  child: Text(
+                    "Tasks for:  $dateClicked",
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.04,
-                        width: MediaQuery.of(context).size.width * 0.08,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: const Icon(
-                          Icons.notifications_active,
-                          color: Colors.white,
-                          size: 20,
+                )),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.43,
+              width: MediaQuery.of(context).size.width * 1,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: ListView.builder(
+                  itemCount: tasksForDateTappedHashMap.length,
+                  itemBuilder: ((context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        String name = tasksHashMap[index + 1]![0].toString();
+                        String definition =
+                            tasksHashMap[index + 1]![1].toString();
+                        String start = tasksHashMap[index + 1]![2].toString();
+                        String end = tasksHashMap[index + 1]![3].toString();
+                        String group = tasksHashMap[index + 1]![4].toString();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TaskDetailsUI(
+                                    name, definition, start, end, group)));
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        margin: const EdgeInsets.only(top: 15),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Colors.purple, Colors.orange]),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Center(
-                            child: Text(
-                              tasksForDateTappedHashMap[index + 1]![0]
-                                  .toString(),
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.04,
+                              width: MediaQuery.of(context).size.width * 0.08,
+                              decoration: const BoxDecoration(
+                                  color: Colors.transparent),
+                              child: const Icon(
+                                Icons.notifications_active,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
-                          ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              width: MediaQuery.of(context).size.width * 0.35,
+                              decoration: const BoxDecoration(
+                                  color: Colors.transparent),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Center(
+                                  child: Text(
+                                    tasksForDateTappedHashMap[index + 1]![0]
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              decoration: const BoxDecoration(
+                                  color: Colors.transparent),
+                              child: const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 7,
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                        width: MediaQuery.of(context).size.width * 0.05,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            radius: 7,
-                            backgroundColor: mainColor,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            })),
-      ),
-      action: SnackBarAction(
-        label: "Dismiss",
-        textColor: Colors.white,
-        onPressed: () {},
+                    );
+                  })),
+            ),
+          ],
+        ),
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -321,10 +319,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Profile()));
-          },
+          onTap: () {},
           child: Container(
             height: 60,
             width: 60,
@@ -517,54 +512,75 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// function to show scrolling dates
   Widget scrollingDates() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width * 0.7,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: ListView.builder(
-          itemCount: date.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: ((context, index) {
-            return GestureDetector(
-              onTap: (() {
-                String date_clicked = HomeScreenLogic()
-                    .buildScrollingDate(date[index].toString());
-                displayToast(date_clicked);
-                tasksForDateTappedHashMap = HomeScreenLogic()
-                    .readTasksForDayTapped(
-                        date_clicked); // initialize tasks for date tapped
-                showSnackbBar();
-              }),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.06,
-                width: MediaQuery.of(context).size.width * 0.13,
-                margin:
-                    const EdgeInsets.only(right: 5, left: 5, top: 5, bottom: 5),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(3))),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text(
-                      "Date",
-                      style: TextStyle(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 0.08,
+          width: MediaQuery.of(context).size.width * 0.7,
+          decoration: const BoxDecoration(color: Colors.transparent),
+          child: ListView.builder(
+              itemCount: dates.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: ((context, index) {
+                return GestureDetector(
+                  onTap: (() {
+                    String date_clicked = HomeScreenLogic()
+                        .buildScrollingDate(dates[index].toString());
+                    displayToast(date_clicked);
+                    tasksForDateTappedHashMap = HomeScreenLogic()
+                        .readTasksForDayTapped(
+                            date_clicked); // initialize tasks for date tapped
+                    showSnackbBar(date_clicked);
+                  }),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.13,
+                    margin: const EdgeInsets.only(
+                        right: 5, left: 5, top: 5, bottom: 5),
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(3))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text(
+                          "Date",
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13),
+                        ),
+                        Text(
+                          dates[index].toString(),
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15),
+                        ),
+                      ],
                     ),
-                    Text(
-                      date[index].toString(),
-                      style: const TextStyle(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          })),
+                  ),
+                );
+              })),
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.08,
+          width: MediaQuery.of(context).size.width * 0.1,
+          decoration: const BoxDecoration(color: Colors.transparent),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Settings()));
+            },
+            child: const Icon(
+              Icons.settings,
+              color: Colors.black,
+              size: 30,
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -582,21 +598,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             width: MediaQuery.of(context).size.width * 0.6,
             margin: const EdgeInsets.only(top: 10, bottom: 10),
             decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(1, 1),
-                      blurRadius: 1,
-                      spreadRadius: 1)
-                ],
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             child: TabBar(
                 labelColor: Colors.white,
-                unselectedLabelColor: Colors.orange,
+                unselectedLabelColor: Colors.black,
                 controller: tabController,
                 indicator: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    borderRadius: const BorderRadius.all(Radius.circular(2)),
                     gradient: LinearGradient(colors: [
                       color1,
                       color2,
@@ -606,14 +615,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Text(
                       "ALL TASKS",
                       style:
-                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                     ),
                   ),
                   Tab(
                     child: Text(
                       "TODAY",
                       style:
-                          TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+                          TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                     ),
                   ),
                 ]),
@@ -634,7 +643,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   opacity: 0.9,
                   child: GradientIcon(
                     Icons.refresh,
-                    25,
+                    40,
                     const LinearGradient(
                       colors: [
                         Colors.purple,
@@ -926,6 +935,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     /// initialize all the tasks hashmap
     tasksHashMap = HomeScreenLogic().readAllTasksData();
+
+    dates = HomeScreenLogic().generateScrollingDates();
 
     super.initState();
   }
