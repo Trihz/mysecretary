@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
+import 'package:mysecretary/debugger/debugger_ui.dart';
 import 'package:mysecretary/gradienticon.dart';
 import 'package:mysecretary/homescreen/homescreen_logic.dart';
 import 'package:mysecretary/newtask/newtask_ui.dart';
 import 'package:mysecretary/personal/personal_ui.dart';
-import 'package:mysecretary/settings.dart';
+import 'package:mysecretary/settings/settings.dart';
 import 'package:mysecretary/tasksdetails/tasksdetails_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -319,7 +320,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const DebuggerUI()));
+          },
           child: Container(
             height: 60,
             width: 60,
