@@ -242,7 +242,7 @@ class _SettingsState extends State<Settings> {
   /// function to display the change password section
   Widget changePassword() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.11,
+      height: MediaQuery.of(context).size.height * 0.09,
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
@@ -262,7 +262,7 @@ class _SettingsState extends State<Settings> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.04,
                 width: MediaQuery.of(context).size.width * 0.4,
                 decoration: const BoxDecoration(color: Colors.transparent),
                 child: TextField(
@@ -303,7 +303,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.04,
                 width: MediaQuery.of(context).size.width * 0.4,
                 decoration: const BoxDecoration(color: Colors.transparent),
                 child: TextField(
@@ -353,7 +353,7 @@ class _SettingsState extends State<Settings> {
   /// function to display the change username section
   Widget changeUserName() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.11,
+      height: MediaQuery.of(context).size.height * 0.09,
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
@@ -370,7 +370,7 @@ class _SettingsState extends State<Settings> {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.05,
+            height: MediaQuery.of(context).size.height * 0.04,
             width: MediaQuery.of(context).size.width * 0.4,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: TextField(
@@ -418,7 +418,7 @@ class _SettingsState extends State<Settings> {
   /// function to display the notification setcion
   Widget notificationSettings() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.3,
+      height: MediaQuery.of(context).size.height * 0.28,
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Column(
@@ -434,7 +434,7 @@ class _SettingsState extends State<Settings> {
                     fontSize: 14),
               )),
           Container(
-            height: MediaQuery.of(context).size.height * 0.1,
+            height: MediaQuery.of(context).size.height * 0.09,
             width: MediaQuery.of(context).size.width * 0.7,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Column(
@@ -674,7 +674,7 @@ class _SettingsState extends State<Settings> {
         ));
   }
 
-  /// function to display the delete database section
+  /// function to display the delete database section (TASKS DATABASE)
   Widget deleteDatabase() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.05,
@@ -682,14 +682,43 @@ class _SettingsState extends State<Settings> {
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: const [
-          Text(
+        children: [
+          const Text(
             "Delete Database",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.w300, fontSize: 14),
           ),
-          SizedBox(width: 30),
-          Icon(Icons.delete)
+          const SizedBox(width: 30),
+          GestureDetector(
+              onTap: () {
+                SettingsLogic().deleteDatabase();
+              },
+              child: const Icon(Icons.delete))
+        ],
+      ),
+    );
+  }
+
+  /// function to reset the database to default settings to enable normal operations after database has been deleted
+  Widget resetDatabase() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.05,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Text(
+            "Reset Database",
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w300, fontSize: 14),
+          ),
+          const SizedBox(width: 30),
+          GestureDetector(
+              onTap: () {
+                SettingsLogic().resetDatabase();
+              },
+              child: const Icon(Icons.refresh))
         ],
       ),
     );
@@ -729,6 +758,7 @@ class _SettingsState extends State<Settings> {
                   changeUserName(),
                   notificationSettings(),
                   deleteDatabase(),
+                  resetDatabase(),
                   const SizedBox(height: 20),
                   updateChangesButton(),
                 ],

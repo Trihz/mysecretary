@@ -555,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const Text(
                           "Date",
                           style: TextStyle(
-                              color: Colors.orange,
+                              color: Colors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 13),
                         ),
@@ -948,10 +948,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     displayToast(deletedTasks.toString());
 
     /// initialize today's tasks hashmap
-    //todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
 
     /// initialize all the tasks hashmap
-    //tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
+    tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
 
     dates = HomeScreenLogic().generateScrollingDates();
 

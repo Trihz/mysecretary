@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:restart_app/restart_app.dart';
 
 class SettingsLogic {
+  /// referencing the already opened database
+  /// this is the tasks database
+  final tasksDatabase = Hive.box("TasksDatabase");
+
   /// function to display toast
   void displayToast(String message) {
     Fluttertoast.showToast(
@@ -31,4 +37,12 @@ class SettingsLogic {
     sharedPreferences.setBool("AutoDeleteStatus", autoDeleteEnabled);
     sharedPreferences.setBool("NotifyStatus", notifyEnabled);
   }
+
+  /// this function deletes the whole database including all the data contained in the database
+  void deleteDatabase() async {
+    tasksDatabase.deleteFromDisk();
+  }
+
+  /// this function resets the database after deleting it
+  void resetDatabase() async {}
 }
