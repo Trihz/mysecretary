@@ -10,7 +10,7 @@ class NewTaskLogic {
   String taskKey = "";
 
   // hashmap to store the task details
-  List<String> taskData = ["", "", "", "", ""];
+  List<String> taskData = ["", "", "", "", "", ""];
 
   // function to display toast
   void displayToast(String message) {
@@ -83,13 +83,14 @@ class NewTaskLogic {
       - The data is recorded into a hashmap
   */
   void newTaskData(String taskName, String taskDefinition, String startDate,
-      String endDate, String taskGroup) {
+      String endDate, String taskGroup, String taskKey) {
     /* set the data values */
     taskData[0] = taskName;
     taskData[1] = taskDefinition;
     taskData[2] = startDate;
     taskData[3] = endDate;
     taskData[4] = taskGroup;
+    taskData[5] = taskKey;
     displayToast(taskData.toString());
   }
 
@@ -102,7 +103,8 @@ class NewTaskLogic {
   void recordData(String taskName, String taskDefinition, String startDate,
       String endDate, String taskGroup) {
     newTaskKey();
-    newTaskData(taskName, taskDefinition, startDate, endDate, taskGroup);
+    newTaskData(
+        taskName, taskDefinition, startDate, endDate, taskGroup, taskKey);
     tasksDatabase.put(int.parse(taskKey), taskData);
   }
 }

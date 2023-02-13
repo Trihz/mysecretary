@@ -44,6 +44,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // a list to define the dates of the month
   List dates = [];
 
+  // variable to store the deleted tasks
+  List<int> deletedTasks = [];
+
   // variables to hold different types of tasks
   HashMap<int, List<String>> tasksForDateTappedHashMap = HashMap();
   HashMap<int, List<String>> tasksHashMap = HashMap();
@@ -117,11 +120,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         String start = tasksHashMap[index + 1]![2].toString();
                         String end = tasksHashMap[index + 1]![3].toString();
                         String group = tasksHashMap[index + 1]![4].toString();
+                        String taskKey = tasksHashMap[index + 1]![5].toString();
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TaskDetailsUI(
-                                    name, definition, start, end, group)));
+                                builder: (context) => TaskDetailsUI(name,
+                                    definition, start, end, group, taskKey)));
                       },
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.06,
@@ -199,15 +203,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       height: MediaQuery.of(context).size.height * 0.45,
       width: MediaQuery.of(context).size.width * 1,
-      margin: const EdgeInsets.only(right: 3, left: 3),
+      margin: const EdgeInsets.only(right: 1, left: 1),
       decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [Colors.purple, Colors.orange]),
           borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15))),
+              bottomLeft: Radius.circular(40),
+              bottomRight: Radius.circular(40))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -639,7 +643,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    tasksHashMap = HomeScreenLogic().readAllTasksData();
+                    deletedTasks = HomeScreenLogic().loadedDeletedTasks();
+                    displayToast(deletedTasks.toString());
+                    tasksHashMap =
+                        HomeScreenLogic().readAllTasksData(deletedTasks);
                     todaysTasksHashMap = HomeScreenLogic().readTodaysData();
                   });
                 },
@@ -688,11 +695,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       String start = tasksHashMap[index + 1]![2].toString();
                       String end = tasksHashMap[index + 1]![3].toString();
                       String group = tasksHashMap[index + 1]![4].toString();
+                      String taskKey = tasksHashMap[index + 1]![5].toString();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TaskDetailsUI(
-                                  name, definition, start, end, group)));
+                              builder: (context) => TaskDetailsUI(name,
+                                  definition, start, end, group, taskKey)));
                     }),
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
@@ -791,11 +799,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           todaysTasksHashMap[index + 1]![2].toString();
                       String end = todaysTasksHashMap[index + 1]![3].toString();
                       String group = tasksHashMap[index + 1]![4].toString();
+                      String taskKey = tasksHashMap[index + 1]![5].toString();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TaskDetailsUI(
-                                  name, definition, start, end, group)));
+                              builder: (context) => TaskDetailsUI(name,
+                                  definition, start, end, group, taskKey)));
                     }),
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.07,
@@ -934,11 +943,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     /// initiliaze today's date
     todayDate = HomeScreenLogic().getTodaysDate();
 
+    /// load deleted tasks
+    deletedTasks = HomeScreenLogic().loadedDeletedTasks();
+    displayToast(deletedTasks.toString());
+
     /// initialize today's tasks hashmap
-    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+    //todaysTasksHashMap = HomeScreenLogic().readTodaysData();
 
     /// initialize all the tasks hashmap
-    tasksHashMap = HomeScreenLogic().readAllTasksData();
+    //tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
 
     dates = HomeScreenLogic().generateScrollingDates();
 

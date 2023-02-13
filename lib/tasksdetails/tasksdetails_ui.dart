@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mysecretary/tasksdetails/tasksdetails_logic.dart';
 
 class TaskDetailsUI extends StatefulWidget {
   String taskName = "";
@@ -7,8 +8,9 @@ class TaskDetailsUI extends StatefulWidget {
   String startDate = "";
   String endDate = "";
   String taskGroup = "";
+  String taskKey = "";
   TaskDetailsUI(this.taskName, this.taskDefinition, this.startDate,
-      this.endDate, this.taskGroup,
+      this.endDate, this.taskGroup, this.taskKey,
       {Key? key})
       : super(key: key);
 
@@ -34,7 +36,7 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
 
   @override
   void initState() {
-    displayToast(widget.taskName);
+    displayToast(widget.taskKey);
     super.initState();
   }
 
@@ -283,22 +285,33 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
               ],
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.05,
-            width: MediaQuery.of(context).size.width * 0.4,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.purple, Colors.orange]),
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: const Center(
-              child: Text(
-                "DELETE TASK",
-                style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900),
+          GestureDetector(
+            onTap: () {
+              //TaskDetailsLogic().predefineKeyValue();
+              TaskDetailsLogic().recordDeletedTasksIndexes(widget.taskKey);
+              //TaskDetailsLogic().readDeletedTasksKeys();
+              TaskDetailsLogic().readData();
+              //TaskDetailsLogic().deleteDatabase();
+
+              //TaskDetailsLogic().deleteSpecifiedTask(widget.taskKey);
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.4,
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Colors.purple, Colors.orange]),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: const Center(
+                child: Text(
+                  "DELETE TASK",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900),
+                ),
               ),
             ),
           ),

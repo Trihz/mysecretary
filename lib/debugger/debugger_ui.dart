@@ -19,7 +19,8 @@ class _DebuggerUIState extends State<DebuggerUI> {
         child: Center(
             child: ElevatedButton(
                 onPressed: () {
-                  DebuggerLogic().readSettings();
+                  //DebuggerLogic().readSettings();
+                  DebuggerLogic().readAllTasksData();
                 },
                 child: const Text("Display"))),
       ),

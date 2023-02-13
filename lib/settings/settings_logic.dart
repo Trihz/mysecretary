@@ -17,10 +17,18 @@ class SettingsLogic {
 
   /// this function saves the settings to the local storage
   void saveSettings(
-      String newPassword, String newUsername, String notificationType) async {
+      String newPassword,
+      String newUsername,
+      String notificationType,
+      bool passwordEnabled,
+      bool autoDeleteEnabled,
+      bool notifyEnabled) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString("Username", newUsername);
     sharedPreferences.setString("Userpassword", newPassword);
     sharedPreferences.setString("NotificationType", notificationType);
+    sharedPreferences.setBool("PasswordStatus", passwordEnabled);
+    sharedPreferences.setBool("AutoDeleteStatus", autoDeleteEnabled);
+    sharedPreferences.setBool("NotifyStatus", notifyEnabled);
   }
 }
