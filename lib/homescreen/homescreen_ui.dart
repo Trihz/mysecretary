@@ -75,6 +75,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         fontSize: 16.0);
   }
 
+  /// this snackbar gets displayed when the initial index has not defined
+  /// the user must first predefine the initial value before even loading the data
+  /// it also gets displayed when the user tries to add a task without predefining the the initia  value
+  /// gets displayed when any tasks requiring predefining of initial value attempts to be done without predefining the value
+  void predifineInitialValueSnackbar() {
+    final snackbar = SnackBar(
+      content: Container(
+        height: MediaQuery.of(context).size.height * 0.2,
+        width: MediaQuery.of(context).size.width * 1,
+        child: Column(
+          children: const [
+            Text(
+              "Operation cannot be perfomed",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500),
+            ),
+            Text("Predefine Initial Value",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500)),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// function to show the snackbar
   /// the snackbar contains tasks specific for the pressed date
   void showSnackbBar(String dateClicked) {

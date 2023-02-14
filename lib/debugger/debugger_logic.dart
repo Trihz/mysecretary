@@ -37,9 +37,7 @@ class DebuggerLogic {
   /// including their details
   void readAllTasksData() {
     int count = 1;
-    List<int> deletedIndexes = [
-      6,
-    ];
+    List<int> deletedIndexes = [];
     int deletedTasksSize = deletedIndexes.length;
     int indexSimilarityCount = 0;
     HashMap<int, List<String>> allTasks = HashMap();
@@ -79,5 +77,12 @@ class DebuggerLogic {
     displayToast(allTasks.toString());
   }
 
-  
+  /// this function checks the value at index 0 of the tasks database
+  void readIndex_0_Value() {
+    if (tasksDatabase.get(0) == null) {
+      displayToast("No value defined at index 0");
+    } else {
+      displayToast(tasksDatabase.get(0));
+    }
+  }
 }

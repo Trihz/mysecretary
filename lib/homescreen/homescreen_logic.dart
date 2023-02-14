@@ -71,21 +71,26 @@ class HomeScreenLogic {
     int count = 1;
     List<String> defaultList = ["", "", "", "", ""];
     HashMap<int, List<String>> todaysTasks = HashMap();
-    todaysTasks[1] = defaultList;
-    int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
-    String todaysDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
-    for (int x = 1; x <= currentNumberOfTasks; x++) {
-      /// skip index 6
-      if (x != 6) {
-        /// get the start date of each task
-        startDate = tasksDatabase.get(x)[2].toString();
-        // compare the start date with today's date
-        if (todaysDate == startDate) {
-          todaysTasks[count] = tasksDatabase.get(x);
-          count++;
+
+    if (tasksDatabase.get(0) != null) {
+      int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
+      String todaysDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+      for (int x = 1; x <= currentNumberOfTasks; x++) {
+        /// skip index 6
+        if (x != 6) {
+          /// get the start date of each task
+          startDate = tasksDatabase.get(x)[2].toString();
+          // compare the start date with today's date
+          if (todaysDate == startDate) {
+            todaysTasks[count] = tasksDatabase.get(x);
+            count++;
+          }
         }
       }
+    } else {
+      todaysTasks[1] = defaultList;
     }
+
     displayToast(todaysTasks.toString());
     return todaysTasks;
   }
@@ -100,36 +105,42 @@ class HomeScreenLogic {
     int count = 1;
     int deletedTasksSize = deletedIndexes.length;
     int indexSimilarityCount = 0;
+    List<String> defaultList = ["", "", "", "", ""];
     HashMap<int, List<String>> allTasks = HashMap();
-    int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
 
-    for (int x = 1; x <= currentNumberOfTasks; x++) {
-      /// run this for loop to check for any similarity btn the current index and the deleted tasks indexes
-      /// if there is similarity then the count becomes non-zero
-      for (int y = 0; y < deletedTasksSize; y++) {
-        /// check whether the current index matches any of the deleted indexes
-        /// if there is similarity then update the count
-        /// if not do not update the count
-        if (x == deletedIndexes[y]) {
-          indexSimilarityCount++;
+    if (tasksDatabase.get(0) != null) {
+      int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
+      for (int x = 1; x <= currentNumberOfTasks; x++) {
+        /// run this for loop to check for any similarity btn the current index and the deleted tasks indexes
+        /// if there is similarity then the count becomes non-zero
+        for (int y = 0; y < deletedTasksSize; y++) {
+          /// check whether the current index matches any of the deleted indexes
+          /// if there is similarity then update the count
+          /// if not do not update the count
+          if (x == deletedIndexes[y]) {
+            indexSimilarityCount++;
+          }
         }
+
+        /// now check the value of the count
+        /// if it is more than zero then there is similarity in the indexes
+        /// skip this particular index
+        /// its data has been deleted
+        /// if it is zero then there is no similarity
+        if (indexSimilarityCount == 0) {
+          allTasks[count] = tasksDatabase.get(x);
+          count++;
+        }
+
+        /// if count is non zero do nothing
+        else {}
+
+        /// clear the count variable
+        indexSimilarityCount = 0;
       }
-
-      /// now check the value of the count
-      /// if it is more than zero then there is similarity in the indexes
-      /// skip this particular index
-      /// its data has been deleted
-      /// if it is zero then there is no similarity
-      if (indexSimilarityCount == 0) {
-        allTasks[count] = tasksDatabase.get(x);
-        count++;
-      }
-
-      /// if count is non zero do nothing
-      else {}
-
-      /// clear the count variable
-      indexSimilarityCount = 0;
+    } else {
+      allTasks[1] = defaultList;
+      displayToast("Predefine Intial Value First");
     }
 
     print("Final Tasks: $allTasks");
