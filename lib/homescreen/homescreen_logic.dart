@@ -108,6 +108,7 @@ class HomeScreenLogic {
     List<String> defaultList = ["", "", "", "", ""];
     HashMap<int, List<String>> allTasks = HashMap();
 
+    /// execute this statement if the value at index 0 of the database is not null
     if (tasksDatabase.get(0) != null) {
       int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
       for (int x = 1; x <= currentNumberOfTasks; x++) {
@@ -138,7 +139,10 @@ class HomeScreenLogic {
         /// clear the count variable
         indexSimilarityCount = 0;
       }
-    } else {
+    }
+
+    /// execute this if the the value at index 0 is null (initial value is not predefined)
+    else {
       allTasks[1] = defaultList;
       displayToast("Predefine Intial Value First");
     }
@@ -147,6 +151,21 @@ class HomeScreenLogic {
 
     displayToast(allTasks.toString());
     return allTasks;
+  }
+
+  /// this function checks whether the value at index 0 is null or not
+  /// it returns a response to indicate whether initial value has been defined
+  /// the response can be "null" or "not null"
+  String checkInitialValueStatus() {
+    String initialValueStatus = "";
+    if (tasksDatabase.get(0) != null) {
+      initialValueStatus = "not null";
+    } else {
+      initialValueStatus = "null";
+    }
+    print(initialValueStatus);
+    displayToast(initialValueStatus);
+    return initialValueStatus;
   }
 
   /*

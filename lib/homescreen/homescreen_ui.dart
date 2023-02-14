@@ -38,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // variable to store the date for today
   String todayDate = "";
 
+  /// this varibale is used to store the status of the initial value at index 0 (null or not null)
+  String initialValueStatus = "";
+
   /// boolean variable to store the status of configuration
   bool isConfigured = false;
 
@@ -75,12 +78,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         fontSize: 16.0);
   }
 
+  /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
+  void showPredefineValueSnackBar() {
+    if (initialValueStatus == "null") {
+      predefineInitialValueSnackbar();
+    } else {
+      addNewTask();
+    }
+  }
+
   /// this snackbar gets displayed when the initial index has not defined
   /// the user must first predefine the initial value before even loading the data
   /// it also gets displayed when the user tries to add a task without predefining the the initia  value
   /// gets displayed when any tasks requiring predefining of initial value attempts to be done without predefining the value
-  void predifineInitialValueSnackbar() {
+  void predefineInitialValueSnackbar() {
     final snackbar = SnackBar(
+      showCloseIcon: true,
+      backgroundColor: Colors.white,
+      margin: const EdgeInsets.only(right: 3, left: 3),
+      duration: const Duration(days: 365),
+      dismissDirection: DismissDirection.up,
+      behavior: SnackBarBehavior.floating,
+      elevation: 40,
       content: Container(
         height: MediaQuery.of(context).size.height * 0.2,
         width: MediaQuery.of(context).size.width * 1,
@@ -102,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   /// function to show the snackbar
@@ -924,7 +944,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         alignment: Alignment.center,
         child: GestureDetector(
             onTap: () {
-              addNewTask();
+              showPredefineValueSnackBar();
             },
             child: Container(
                 decoration: BoxDecoration(
@@ -971,6 +991,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     /// initiliaze today's date
     todayDate = HomeScreenLogic().getTodaysDate();
+
+    /// get the initial value status
+    initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
 
     /// load deleted tasks
     deletedTasks = HomeScreenLogic().loadedDeletedTasks();
