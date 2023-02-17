@@ -79,11 +79,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
-  void showPredefineValueSnackBar() {
+  void checkStatusOfInitialValue_NewTask() {
+    /// get the initial value status
+    initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+
+    /// if the initial status of the value is null execute this
     if (initialValueStatus == "null") {
       predefineInitialValueSnackbar();
-    } else {
+    }
+
+    /// if the initial status is not null execute this
+    else {
       addNewTask();
+    }
+  }
+
+  /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
+  void checkStatusOfInitialValue_Refresh() {
+    /// get the initial value status
+    initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+
+    /// if the initial status of the value is null execute this
+    if (initialValueStatus == "null") {
+      predefineInitialValueSnackbar();
+    }
+
+    /// if the initial status is not null execute this
+    else {
+      setState(() {
+        deletedTasks = HomeScreenLogic().loadedDeletedTasks();
+        displayToast(deletedTasks.toString());
+        tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
+        todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+      });
     }
   }
 
@@ -92,8 +120,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   /// it also gets displayed when the user tries to add a task without predefining the the initia  value
   /// gets displayed when any tasks requiring predefining of initial value attempts to be done without predefining the value
   void predefineInitialValueSnackbar() {
-    final snackbar = SnackBar(
-      showCloseIcon: true,
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: Colors.white,
       margin: const EdgeInsets.only(right: 3, left: 3),
       duration: const Duration(days: 365),
@@ -101,27 +128,52 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       behavior: SnackBarBehavior.floating,
       elevation: 40,
       content: Container(
-        height: MediaQuery.of(context).size.height * 0.2,
+        height: MediaQuery.of(context).size.height * 0.15,
         width: MediaQuery.of(context).size.width * 1,
+        decoration: const BoxDecoration(color: Colors.transparent),
         child: Column(
-          children: const [
-            Text(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Text(
               "Operation cannot be perfomed",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14,
+                  fontSize: 18,
                   fontWeight: FontWeight.w500),
             ),
-            Text("Predefine Initial Value",
+            const Text("Initialize the database first",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
-                    fontWeight: FontWeight.w500)),
+                    fontWeight: FontWeight.w300)),
+            const SizedBox(height: 10),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: ElevatedButton(
+                  onPressed: () {
+                    HomeScreenLogic().predefineKeyValue();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.grey,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  child: const Text(
+                    "INITIALIZE",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500),
+                  )),
+            )
           ],
         ),
       ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    ));
   }
 
   /// function to show the snackbar
@@ -691,13 +743,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               decoration: const BoxDecoration(color: Colors.transparent),
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    deletedTasks = HomeScreenLogic().loadedDeletedTasks();
-                    displayToast(deletedTasks.toString());
-                    tasksHashMap =
-                        HomeScreenLogic().readAllTasksData(deletedTasks);
-                    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
-                  });
+                  checkStatusOfInitialValue_Refresh();
                 },
                 child: Opacity(
                   opacity: 0.9,
@@ -944,7 +990,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         alignment: Alignment.center,
         child: GestureDetector(
             onTap: () {
-              showPredefineValueSnackBar();
+              checkStatusOfInitialValue_NewTask();
             },
             child: Container(
                 decoration: BoxDecoration(

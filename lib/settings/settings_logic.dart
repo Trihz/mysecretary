@@ -9,6 +9,9 @@ class SettingsLogic {
   /// this is the tasks database
   final tasksDatabase = Hive.box("TasksDatabase");
 
+  /// database for storing inactive tasks
+  final deletedTasksDatabase = Hive.box("DeletedTasksDatabase");
+
   /// function to display toast
   void displayToast(String message) {
     Fluttertoast.showToast(
@@ -39,8 +42,16 @@ class SettingsLogic {
   }
 
   /// this function deletes the whole database including all the data contained in the database
-  void deleteDatabase() async {
+  /// it deletes the tasks database
+  void deleteActiveTasksDatabase() async {
     tasksDatabase.deleteFromDisk();
+  }
+
+  /// this function deletes the whole database including all the data contained in the database
+  /// it deletes the inactive tasks database
+  void deleteInactiveTasksDatabase() {
+    deletedTasksDatabase.deleteFromDisk();
+    displayToast("Databases deleted");
   }
 
   /// this function resets the database after deleting it

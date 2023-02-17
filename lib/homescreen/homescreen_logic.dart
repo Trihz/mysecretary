@@ -45,6 +45,17 @@ class HomeScreenLogic {
     return builtDate;
   }
 
+  /*
+      function to predefine the key value
+      - creates a new record in the database for holding key value
+      - default key for this varible is '0'
+      - this method is run once
+  */
+  void predefineKeyValue() {
+    tasksDatabase.put(0, "0");
+    displayToast("0 key predefined");
+  }
+
   /// function to load the deleted tasks keys
   /// this function has to be loaded each time the taks are loaded
   /// this is to ensure that deleted tasks wont be loaded

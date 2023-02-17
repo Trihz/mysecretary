@@ -691,7 +691,9 @@ class _SettingsState extends State<Settings> {
           const SizedBox(width: 30),
           GestureDetector(
               onTap: () {
-                SettingsLogic().deleteDatabase();
+                // delete the databases
+                SettingsLogic().deleteActiveTasksDatabase();
+                SettingsLogic().deleteInactiveTasksDatabase();
               },
               child: const Icon(Icons.delete))
         ],
