@@ -53,19 +53,37 @@ class HomeScreenLogic {
   */
   void predefineKeyValue() {
     tasksDatabase.put(0, "0");
-    displayToast("0 key predefined");
+  }
+
+  /// we have to create a variable that keeps track of the current index
+  /// the variable is stored in the database
+  /// we define the variable and store its value in the database
+  /// we define the key of the variable to "0"
+  /// the initial value is defined to be "0"
+  /// each time a new task needs to be added then the variable is incremented and used as a key for the current task
+  /// this function is run once
+  void predefineKeyValue_InactiveTasks() {
+    deletedTasksDatabase.put(0, "0");
   }
 
   /// function to load the deleted tasks keys
-  /// this function has to be loaded each time the taks are loaded
-  /// this is to ensure that deleted tasks wont be loaded
+  /// this function has to be loaded before all the tasks are loaded
+  /// this is to ensure that deleted tasks won't be loaded
   /// function to view the data stored in deleted tasks database
-  List<int> loadedDeletedTasks() {
+  /// has a defualt list that gets displayed when there is no data in the database
+  List<int> readDeletedTasks() {
+    List<int> defaultList = [];
     List<int> deletedTasks = [];
-    int databaseSize = int.parse(deletedTasksDatabase.get(0));
-    for (int x = 1; x <= databaseSize; x++) {
-      deletedTasks.add(int.parse(deletedTasksDatabase.get(x.toString())));
+
+    if (deletedTasksDatabase.get(0) != null) {
+      int databaseSize = int.parse(deletedTasksDatabase.get(0));
+      for (int x = 1; x <= databaseSize; x++) {
+        deletedTasks.add(int.parse(deletedTasksDatabase.get(x.toString())));
+      }
+    } else {
+      deletedTasks = defaultList;
     }
+
     print(deletedTasks);
     return deletedTasks;
   }
@@ -101,8 +119,6 @@ class HomeScreenLogic {
     } else {
       todaysTasks[1] = defaultList;
     }
-
-    displayToast(todaysTasks.toString());
     return todaysTasks;
   }
 
@@ -155,12 +171,10 @@ class HomeScreenLogic {
     /// execute this if the the value at index 0 is null (initial value is not predefined)
     else {
       allTasks[1] = defaultList;
-      displayToast("Predefine Intial Value First");
     }
 
     print("Final Tasks: $allTasks");
 
-    displayToast(allTasks.toString());
     return allTasks;
   }
 
@@ -175,7 +189,6 @@ class HomeScreenLogic {
       initialValueStatus = "null";
     }
     print(initialValueStatus);
-    displayToast(initialValueStatus);
     return initialValueStatus;
   }
 
@@ -196,7 +209,6 @@ class HomeScreenLogic {
         count++;
       }
     }
-    displayToast(tasksForDayTapped.toString());
     return tasksForDayTapped;
   }
 
@@ -210,7 +222,6 @@ class HomeScreenLogic {
     todaysYear = DateFormat("yyyy").format(DateTime.now());
     todaysMonth = DateFormat("MM").format(DateTime.now());
     daysInTheMonth = daysInMonth(int.parse(todaysYear), int.parse(todaysMonth));
-    displayToast(daysInTheMonth.toString());
     return daysInTheMonth;
   }
 

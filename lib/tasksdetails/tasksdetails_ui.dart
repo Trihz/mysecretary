@@ -287,13 +287,8 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
           ),
           GestureDetector(
             onTap: () {
-              //TaskDetailsLogic().predefineKeyValue();
               TaskDetailsLogic().recordDeletedTasksIndexes(widget.taskKey);
-              //TaskDetailsLogic().readDeletedTasksKeys();
               TaskDetailsLogic().readData();
-              //TaskDetailsLogic().deleteDatabase();
-
-              //TaskDetailsLogic().deleteSpecifiedTask(widget.taskKey);
             },
             child: Container(
               height: MediaQuery.of(context).size.height * 0.05,

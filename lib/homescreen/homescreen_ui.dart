@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mysecretary/business/business_ui.dart';
 import 'package:mysecretary/class/class_ui.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
@@ -21,21 +22,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  // variable to store the main color
+  // referencing the tasks database
+  final tasksDatabase = Hive.box("TasksDatabase");
+
+  /// referencing the delted tasks database
+  final deletedTasksDatabase = Hive.box("DeletedTasksDatabase");
+
+  /// variable to store the main color
   Color mainColor = const Color.fromARGB(255, 41, 143, 174);
-  // variable to store the color for uncompleted task
+
+  /// variable to store the color for uncompleted task
   Color uncompletedTaskColor = Colors.transparent;
-  // variable to store the color for completed tasks
+
+  /// variable to store the color for completed tasks
   Color completedTaskColor = const Color.fromARGB(255, 41, 143, 174);
 
-  // varaibles to store the main screen gradient colors
+  /// varaibles to store the main screen gradient colors
   Color color1 = Colors.purple;
   Color color2 = Colors.orange;
 
-  // variable to store the username
+  /// variable to store the username
   String userName = "";
 
-  // variable to store the date for today
+  /// variable to store the date for today
   String todayDate = "";
 
   /// this varibale is used to store the status of the initial value at index 0 (null or not null)
@@ -43,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// boolean variable to store the status of configuration
   bool isConfigured = false;
+
+  /// this variable stores the state of refreshing icon
+  bool isRefreshing = false;
 
   // a list to define the dates of the month
   List dates = [];
@@ -80,38 +92,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
   void checkStatusOfInitialValue_NewTask() {
-    /// get the initial value status
-    initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+    /// check whether the boxes have been opened
+    if (Hive.isBoxOpen("TasksDatabase") ||
+        Hive.isBoxOpen("DeletedTasksDatabase")) {
+      /// get the initial value status to see whether it is null or not
+      initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
 
-    /// if the initial status of the value is null execute this
-    if (initialValueStatus == "null") {
-      predefineInitialValueSnackbar();
-    }
+      /// if the initial status of the value is null execute this
+      if (initialValueStatus == "null") {
+        predefineInitialValueSnackbar();
+      }
 
-    /// if the initial status is not null execute this
-    else {
-      addNewTask();
+      /// if the initial status is not null execute this
+      else {
+        addNewTask();
+      }
+    } else {
+      restartAppDialog();
+      print("The database has not been opened");
     }
   }
 
   /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
   void checkStatusOfInitialValue_Refresh() {
-    /// get the initial value status
-    initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+    if (Hive.isBoxOpen("TasksDatabase") ||
+        Hive.isBoxOpen("DeletedTasksDatabase")) {
+      /// get the initial value status
+      initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
 
-    /// if the initial status of the value is null execute this
-    if (initialValueStatus == "null") {
-      predefineInitialValueSnackbar();
-    }
+      /// if the initial status of the value is null execute this
+      if (initialValueStatus == "null") {
+        predefineInitialValueSnackbar();
+      }
 
-    /// if the initial status is not null execute this
-    else {
-      setState(() {
-        deletedTasks = HomeScreenLogic().loadedDeletedTasks();
-        displayToast(deletedTasks.toString());
-        tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
-        todaysTasksHashMap = HomeScreenLogic().readTodaysData();
-      });
+      /// if the initial status is not null execute this
+      else {
+        setState(() {
+          deletedTasks = HomeScreenLogic().readDeletedTasks();
+          tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
+          todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+        });
+      }
+    } else {
+      restartAppDialog();
+      print("The database has not been opened");
     }
   }
 
@@ -153,7 +177,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               decoration: const BoxDecoration(color: Colors.transparent),
               child: ElevatedButton(
                   onPressed: () {
+                    /// predefine initial key values for both databases
                     HomeScreenLogic().predefineKeyValue();
+                    HomeScreenLogic().predefineKeyValue_InactiveTasks();
+
+                    /// hide the snackbar after initialization process
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   },
                   style: ElevatedButton.styleFrom(
@@ -636,7 +664,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   onTap: (() {
                     String date_clicked = HomeScreenLogic()
                         .buildScrollingDate(dates[index].toString());
-                    displayToast(date_clicked);
                     tasksForDateTappedHashMap = HomeScreenLogic()
                         .readTasksForDayTapped(
                             date_clicked); // initialize tasks for date tapped
@@ -737,29 +764,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ]),
           ),
           Container(
-              height: MediaQuery.of(context).size.height * 0.1,
-              width: MediaQuery.of(context).size.width * 0.15,
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.16,
               padding: const EdgeInsets.only(left: 10, right: 10),
               decoration: const BoxDecoration(color: Colors.transparent),
               child: GestureDetector(
                 onTap: () {
+                  setState(() {
+                    isRefreshing = true;
+                  });
+                  Future.delayed(const Duration(seconds: 1), () {
+                    setState(() {
+                      isRefreshing = false;
+                    });
+                  });
                   checkStatusOfInitialValue_Refresh();
                 },
-                child: Opacity(
-                  opacity: 0.9,
-                  child: GradientIcon(
-                    Icons.refresh,
-                    40,
-                    const LinearGradient(
-                      colors: [
-                        Colors.purple,
-                        Colors.orange,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                ),
+                child: isRefreshing
+                    ? Center(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.032,
+                          width: MediaQuery.of(context).size.width * 0.065,
+                          decoration:
+                              const BoxDecoration(color: Colors.transparent),
+                          child: const CircularProgressIndicator(
+                            backgroundColor: Colors.orange,
+                            valueColor: AlwaysStoppedAnimation(Colors.black),
+                            strokeWidth: 3,
+                          ),
+                        ),
+                      )
+                    : GradientIcon(
+                        Icons.refresh,
+                        40,
+                        const LinearGradient(
+                          colors: [
+                            Colors.purple,
+                            Colors.orange,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
               ))
         ],
       ),
@@ -1041,9 +1087,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     /// get the initial value status
     initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
 
-    /// load deleted tasks
-    deletedTasks = HomeScreenLogic().loadedDeletedTasks();
-    displayToast(deletedTasks.toString());
+    /// initialize inactive (deleted) tasks hashmap
+    deletedTasks = HomeScreenLogic().readDeletedTasks();
 
     /// initialize today's tasks hashmap
     todaysTasksHashMap = HomeScreenLogic().readTodaysData();
@@ -1073,4 +1118,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     ));
   }
+
+  /// alert dialog to notify the user to restart the app to open the database
+  Future restartAppDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.restart_alt,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: const Center(
+              child: Text(
+                "Restart the App",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          )));
 }

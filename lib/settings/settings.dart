@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:mysecretary/gradienticon.dart';
 import 'package:mysecretary/settings/settings_logic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -662,8 +663,6 @@ class _SettingsState extends State<Settings> {
                 passwordEnabled,
                 autoDeleteEnabled,
                 notifyEnabled);
-            displayToast(
-                "Old Password: $oldPassword New Password: $newPassword New Username: $newUsername Notification Type: $notificationType Password Enable: $passwordEnabled AutoDelete Enable: $autoDeleteEnabled Notify Enable: $notifyEnabled");
           },
           child: const Center(
               child: Text(
@@ -691,36 +690,10 @@ class _SettingsState extends State<Settings> {
           const SizedBox(width: 30),
           GestureDetector(
               onTap: () {
-                // delete the databases
-                SettingsLogic().deleteActiveTasksDatabase();
-                SettingsLogic().deleteInactiveTasksDatabase();
+                // confirm delete dialog
+                confirmDeleteDialog();
               },
               child: const Icon(Icons.delete))
-        ],
-      ),
-    );
-  }
-
-  /// function to reset the database to default settings to enable normal operations after database has been deleted
-  Widget resetDatabase() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.05,
-      width: MediaQuery.of(context).size.width * 0.9,
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Text(
-            "Reset Database",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w300, fontSize: 14),
-          ),
-          const SizedBox(width: 30),
-          GestureDetector(
-              onTap: () {
-                SettingsLogic().resetDatabase();
-              },
-              child: const Icon(Icons.refresh))
         ],
       ),
     );
@@ -760,7 +733,6 @@ class _SettingsState extends State<Settings> {
                   changeUserName(),
                   notificationSettings(),
                   deleteDatabase(),
-                  resetDatabase(),
                   const SizedBox(height: 20),
                   updateChangesButton(),
                 ],
@@ -771,4 +743,36 @@ class _SettingsState extends State<Settings> {
       ),
     ));
   }
+
+  /// alert dialog to propmt the user to confirm deletion of the database
+  Future confirmDeleteDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.delete,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    // delete both databases
+                    SettingsLogic().deleteActiveTasksDatabase();
+                    SettingsLogic().deleteInactiveTasksDatabase();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.grey,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  child: const Text("CONFIRM")),
+            ),
+          )));
 }
