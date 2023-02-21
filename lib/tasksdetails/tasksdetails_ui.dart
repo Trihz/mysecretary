@@ -19,10 +19,10 @@ class TaskDetailsUI extends StatefulWidget {
 }
 
 class _TaskDetailsUIState extends State<TaskDetailsUI> {
-  // variable to store the main color
+  /// variable to store the main color
   Color mainColor = const Color.fromARGB(255, 41, 143, 174);
 
-  // function to diaplay the toast message
+  /// function to diaplay the toast message
   void displayToast(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -34,6 +34,231 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
         fontSize: 16.0);
   }
 
+  /// this function makes all the details about the task to be blank after the task has been deleted
+  void defaultState() {
+    setState(() {
+      widget.taskName = "";
+      widget.taskGroup = "";
+      widget.taskDefinition = "";
+      widget.startDate = "";
+      widget.endDate = "";
+    });
+  }
+
+  /// function to display the task name section
+  Widget taskName() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.08,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+              height: MediaQuery.of(context).size.height * 0.04,
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "TASK NAME",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w200),
+                ),
+              )),
+          Container(
+              height: MediaQuery.of(context).size.height * 0.04,
+              width: MediaQuery.of(context).size.width * 0.85,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Center(
+                  child: Text(
+                    widget.taskName,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  /// function to display the task group section
+  Widget taskGroup() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.08,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+              height: MediaQuery.of(context).size.height * 0.04,
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "TASK GROUP",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w200),
+                ),
+              )),
+          Container(
+              height: MediaQuery.of(context).size.height * 0.04,
+              width: MediaQuery.of(context).size.width * 0.85,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Center(
+                  child: Text(
+                    widget.taskGroup,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  /// function to display the task definition section
+  Widget taskDefinition() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.18,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "TASK DEFINITION",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w200),
+                ),
+              )),
+          Container(
+              height: MediaQuery.of(context).size.height * 0.12,
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Center(
+                  child: Text(
+                    widget.taskDefinition,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  /// function to display the start and end date section
+  Widget taskDates() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.11,
+      width: MediaQuery.of(context).size.width * 0.9,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.4,
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: const Center(
+                  child: Text(
+                    "START DATE",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w200),
+                  ),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.4,
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: const Center(
+                  child: Text(
+                    "END DATE",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w200),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.06,
+                width: MediaQuery.of(context).size.width * 0.4,
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: Center(
+                  child: Text(
+                    widget.startDate,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.06,
+                width: MediaQuery.of(context).size.width * 0.4,
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: Center(
+                  child: Text(
+                    widget.endDate,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  /// this function gets executed first when the screen is launched
   @override
   void initState() {
     displayToast(widget.taskKey);
@@ -68,227 +293,16 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "TASK NAME",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w200),
-                            ),
-                          )),
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Center(
-                              child: Text(
-                                widget.taskName,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  thickness: 0.5,
-                  height: 3,
-                  indent: MediaQuery.of(context).size.width * 0,
-                  endIndent: MediaQuery.of(context).size.width * 0,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "TASK GROUP",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w200),
-                            ),
-                          )),
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Center(
-                              child: Text(
-                                widget.taskGroup,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.18,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "TASK DEFINITION",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w200),
-                            ),
-                          )),
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.12,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          padding: const EdgeInsets.all(10),
-                          decoration:
-                              const BoxDecoration(color: Colors.transparent),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Center(
-                              child: Text(
-                                widget.taskDefinition,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.11,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: const Center(
-                              child: Text(
-                                "START DATE",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: const Center(
-                              child: Text(
-                                "END DATE",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Center(
-                              child: Text(
-                                widget.startDate,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            decoration:
-                                const BoxDecoration(color: Colors.transparent),
-                            child: Center(
-                              child: Text(
-                                widget.endDate,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                taskName(),
+                taskGroup(),
+                taskDefinition(),
+                taskDates()
               ],
             ),
           ),
           GestureDetector(
             onTap: () {
-              TaskDetailsLogic().recordDeletedTasksIndexes(widget.taskKey);
-              TaskDetailsLogic().readData();
+              confirmDeleteDialog();
             },
             child: Container(
               height: MediaQuery.of(context).size.height * 0.05,
@@ -315,4 +329,60 @@ class _TaskDetailsUIState extends State<TaskDetailsUI> {
       ),
     ));
   }
+
+  /// alert dialog to show succesfull deletion of a task
+  Future taskDeletionDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.done,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: const Center(
+              child: Text(
+                "Task Deleted Successfully",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ),
+          )));
+
+  /// alert dialog to propmt the user to confirm deletion of the task
+  Future confirmDeleteDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.delete,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    /// delete the task by recording it in the deleted tasks database
+                    TaskDetailsLogic()
+                        .recordDeletedTasksIndexes(widget.taskKey);
+                    TaskDetailsLogic().readData();
+                    defaultState();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.grey,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  child: const Text("CONFIRM")),
+            ),
+          )));
 }

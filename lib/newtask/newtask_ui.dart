@@ -365,17 +365,19 @@ class _NewTaskState extends State<NewTask> {
                 taskStartDate_Calendar,
                 taskEndDate_Calendar,
                 taskGroup);
+            taskCreationDialog();
             //NewTaskLogic().readData();
             //NewTaskLogic().deleteDatabase();
           },
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              shadowColor: Colors.grey,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)))),
           child: const Text(
             "SAVE",
-            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
           )),
     );
   }
@@ -414,4 +416,26 @@ class _NewTaskState extends State<NewTask> {
       ),
     ));
   }
+
+  /// alert dialog to show succesfull creation of a task
+  Future taskCreationDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.done,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: const Center(
+              child: Text(
+                "Task Successfully Created",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ),
+          )));
 }
