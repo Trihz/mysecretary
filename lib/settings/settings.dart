@@ -121,6 +121,7 @@ class _SettingsState extends State<Settings> {
                 duration: const Duration(milliseconds: 500),
                 onToggle: (val) {
                   setState(() {
+                    /// change the status of the password enable variable
                     passwordEnabled = val;
                   });
                 },
