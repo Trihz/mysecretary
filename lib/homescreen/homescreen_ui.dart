@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,6 +14,7 @@ import 'package:mysecretary/personal/personal_ui.dart';
 import 'package:mysecretary/settings/settings.dart';
 import 'package:mysecretary/tasksdetails/tasksdetails_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -67,6 +69,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HashMap<int, List<String>> tasksHashMap = HashMap();
   HashMap<int, List<String>> todaysTasksHashMap = HashMap();
 
+  File? profileImage;
+
+  /// function to pick the profile image from the local database
+  Future pickProfileImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return; // terminate the function
+      File? img = File(image.path);
+      setState(() {
+        profileImage = img;
+        Navigator.of(context).pop();
+      });
+    } on Exception catch (e) {
+      print(e);
+      Navigator.of(context).pop();
+    }
+  }
+
   /// function to get username
   /// achieved through shared preferences
   /// stored in the local storage
@@ -92,22 +112,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
   void checkStatusOfInitialValue_NewTask() {
-    /// check whether the boxes have been opened
+    /// execute this if the database has been opened
     if (Hive.isBoxOpen("TasksDatabase") ||
         Hive.isBoxOpen("DeletedTasksDatabase")) {
       /// get the initial value status to see whether it is null or not
       initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
 
-      /// if the initial status of the value is null execute this
+      /// if the initial status of the value is null execute this(Initialize Snackbar)
       if (initialValueStatus == "null") {
         predefineInitialValueSnackbar();
       }
 
-      /// if the initial status is not null execute this
+      /// if the initial status is not null execute this (Go to NewTask() page)
       else {
         addNewTask();
       }
-    } else {
+    }
+
+    /// execute this if the database has not been opened
+    else {
       restartAppDialog();
       print("The database has not been opened");
     }
@@ -115,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
   void checkStatusOfInitialValue_Refresh() {
+    /// execute this if the database has been opened
     if (Hive.isBoxOpen("TasksDatabase") ||
         Hive.isBoxOpen("DeletedTasksDatabase")) {
       /// get the initial value status
@@ -130,10 +154,94 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         setState(() {
           deletedTasks = HomeScreenLogic().readDeletedTasks();
           tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
-          todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+          todaysTasksHashMap = HomeScreenLogic().readTodaysData(deletedTasks);
         });
       }
-    } else {
+    }
+
+    /// execute this if the database has not been opened
+    else {
+      restartAppDialog();
+      print("The database has not been opened");
+    }
+  }
+
+  /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
+  void checkStatusOfInitialValue_Class() {
+    /// execute this if the database has been opened
+    if (Hive.isBoxOpen("TasksDatabase") ||
+        Hive.isBoxOpen("DeletedTasksDatabase")) {
+      /// get the initial value status to see whether it is null or not
+      initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+
+      /// if the initial status of the value is null execute this(Initialize Snackbar)
+      if (initialValueStatus == "null") {
+        predefineInitialValueSnackbar();
+      }
+
+      /// if the initial status is not null execute this (Go to Class() page)
+      else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Class()));
+      }
+    }
+
+    /// execute this if the database has not been opened
+    else {
+      restartAppDialog();
+      print("The database has not been opened");
+    }
+  }
+
+  /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
+  void checkStatusOfInitialValue_Personal() {
+    /// execute this if the database has been opened
+    if (Hive.isBoxOpen("TasksDatabase") ||
+        Hive.isBoxOpen("DeletedTasksDatabase")) {
+      /// get the initial value status to see whether it is null or not
+      initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+
+      /// if the initial status of the value is null execute this(Initialize Snackbar)
+      if (initialValueStatus == "null") {
+        predefineInitialValueSnackbar();
+      }
+
+      /// if the initial status is not null execute this (Go to Personal() page)
+      else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Personal()));
+      }
+    }
+
+    /// execute this if the database has not been opened
+    else {
+      restartAppDialog();
+      print("The database has not been opened");
+    }
+  }
+
+  /// function to show the predefine initial value snackbar if there is no initial value predefined (null)
+  void checkStatusOfInitialValue_Business() {
+    /// execute this if the database has been opened
+    if (Hive.isBoxOpen("TasksDatabase") ||
+        Hive.isBoxOpen("DeletedTasksDatabase")) {
+      /// get the initial value status to see whether it is null or not
+      initialValueStatus = HomeScreenLogic().checkInitialValueStatus();
+
+      /// if the initial status of the value is null execute this(Initialize Snackbar)
+      if (initialValueStatus == "null") {
+        predefineInitialValueSnackbar();
+      }
+
+      /// if the initial status is not null execute this (Go to Business() page)
+      else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Business()));
+      }
+    }
+
+    /// execute this if the database has not been opened
+    else {
       restartAppDialog();
       print("The database has not been opened");
     }
@@ -183,6 +291,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                     /// hide the snackbar after initialization process
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                    /// show success dialog
+                    successDialog();
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey.shade300,
@@ -454,8 +565,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const DebuggerUI()));
+            //pickProfileImage(ImageSource.gallery);
+            /*Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const DebuggerUI()));*/
           },
           child: Container(
             height: 60,
@@ -463,7 +575,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                  image: AssetImage("assets/steve.jpg"), fit: BoxFit.fill),
+                  image: AssetImage("assets/profilephoto.jpg"),
+                  fit: BoxFit.fill),
             ),
           ),
         ),
@@ -510,8 +623,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Class()));
+                    checkStatusOfInitialValue_Class();
                   },
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
@@ -552,10 +664,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 GestureDetector(
                   onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Personal()));
+                    checkStatusOfInitialValue_Personal();
                   }),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
@@ -596,10 +705,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 GestureDetector(
                   onTap: (() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Business()));
+                    checkStatusOfInitialValue_Business();
                   }),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
@@ -1091,7 +1197,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     deletedTasks = HomeScreenLogic().readDeletedTasks();
 
     /// initialize today's tasks hashmap
-    todaysTasksHashMap = HomeScreenLogic().readTodaysData();
+    todaysTasksHashMap = HomeScreenLogic().readTodaysData(deletedTasks);
 
     /// initialize all the tasks hashmap
     tasksHashMap = HomeScreenLogic().readAllTasksData(deletedTasks);
@@ -1136,6 +1242,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: const Center(
               child: Text(
                 "Restart the App",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          )));
+
+  /// alert dialog to show success in initializing the database
+  Future successDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.done,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: const Center(
+              child: Text(
+                "Initialization was successfull !!",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),

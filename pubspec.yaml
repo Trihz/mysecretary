@@ -44,7 +44,7 @@ dependencies:
   flutter_switch: ^0.3.2
   animated_text_kit: ^4.2.2
   quiver: ^3.2.1
-  restart_app: ^1.1.0
+  image_picker: ^0.8.6+2
 
 
 dev_dependencies:

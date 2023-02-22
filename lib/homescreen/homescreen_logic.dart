@@ -96,27 +96,54 @@ class HomeScreenLogic {
       - the function also returns a hashmap containing all the taks for today
       - you have to skip indexes that have not data or data has been deleted
   */
-  HashMap<int, List<String>> readTodaysData() {
+  HashMap<int, List<String>> readTodaysData(List<int> deletedIndexes) {
     int count = 1;
+    int deletedTasksSize = deletedIndexes.length;
+    int indexSimilarityCount = 0;
     List<String> defaultList = ["", "", "", "", ""];
     HashMap<int, List<String>> todaysTasks = HashMap();
 
+    /// execute this statement if the value at index 0 is not null
     if (tasksDatabase.get(0) != null) {
       int currentNumberOfTasks = int.parse(tasksDatabase.get(0));
       String todaysDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
       for (int x = 1; x <= currentNumberOfTasks; x++) {
-        /// skip index 6
-        if (x != 6) {
-          /// get the start date of each task
+        /// run this for loop to check for any similarity btn the current index and the deleted tasks indexes
+        /// if there is similarity then the count becomes non-zero
+        for (int y = 0; y < deletedTasksSize; y++) {
+          /// check whether the current index matches any of the deleted indexes
+          /// if there is similarity then update the count
+          /// if not do not update the count
+          if (x == deletedIndexes[y]) {
+            indexSimilarityCount++;
+          } else {}
+        }
+
+        /// now check the value of the count
+        /// if it is more than zero then there is similarity in the indexes
+        /// skip this particular index
+        /// its data has been deleted
+        /// if it is zero then there is no similarity
+        if (indexSimilarityCount == 0) {
+          /// get the start date of each task (appears at index 2 of the list)
           startDate = tasksDatabase.get(x)[2].toString();
           // compare the start date with today's date
           if (todaysDate == startDate) {
             todaysTasks[count] = tasksDatabase.get(x);
             count++;
-          }
+          } else {}
         }
+
+        /// if count is non zero do nothing
+        else {}
+
+        /// clear the count variable
+        indexSimilarityCount = 0;
       }
-    } else {
+    }
+
+    /// execute this statement if the value at index 0 is null
+    else {
       todaysTasks[1] = defaultList;
     }
     return todaysTasks;
@@ -124,9 +151,9 @@ class HomeScreenLogic {
 
   /* 
       Function to read all the data stored in the local database
-      - the data is displayed in a containers
-      - the function returns a hashmap containing all the tasks recorded by the user
-      - you have to skip indexes that have not data or data has been deleted
+      - the data is displayed in a container
+      - the function returns a hashmap containing all the tasks recorded by the user excluding the deleted ones
+      - you have to skip indexes that have no data or data has been deleted
   */
   HashMap<int, List<String>> readAllTasksData(List<int> deletedIndexes) {
     int count = 1;
@@ -147,7 +174,7 @@ class HomeScreenLogic {
           /// if not do not update the count
           if (x == deletedIndexes[y]) {
             indexSimilarityCount++;
-          }
+          } else {}
         }
 
         /// now check the value of the count

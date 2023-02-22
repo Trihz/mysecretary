@@ -52,6 +52,36 @@ class _NewTaskState extends State<NewTask> {
   // text form controller
   final TextEditingController textEditingController = TextEditingController();
 
+  /// function to display toast
+  void displayToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  /// fill all fieds snackbar
+  void showSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(milliseconds: 1000),
+        backgroundColor: Colors.white,
+        content: Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: const Center(
+                child: Text(
+              "Please fill all the details",
+              style: TextStyle(color: Colors.red),
+            ))),
+      ),
+    );
+  }
+
   // function to show the selected day
   void _onDaySelected(DateTime day, DateTime focusedday) {
     setState(() {
@@ -358,16 +388,31 @@ class _NewTaskState extends State<NewTask> {
             setState(() {
               taskDefinition_TextField = textEditingController.value.text;
             });
-            //NewTaskLogic().predefineKeyValue();
-            NewTaskLogic().recordData(
-                taskName_TextField,
-                taskDefinition_TextField,
-                taskStartDate_Calendar,
-                taskEndDate_Calendar,
-                taskGroup);
-            taskCreationDialog();
-            //NewTaskLogic().readData();
-            //NewTaskLogic().deleteDatabase();
+
+            if (taskName_TextField == "" ||
+                taskDefinition_TextField == "" ||
+                taskStartDate_Calendar == "" ||
+                taskEndDate_Calendar == "" ||
+                taskGroup == "") {
+              showSnackBar();
+            } else {
+              NewTaskLogic().recordData(
+                  taskName_TextField,
+                  taskDefinition_TextField,
+                  taskStartDate_Calendar,
+                  taskEndDate_Calendar,
+                  taskGroup);
+
+              /// revert the values back to default state
+              setState(() {
+                taskName_TextField = "";
+                taskDefinition_TextField = "";
+                taskStartDate_Calendar = "";
+                taskEndDate_Calendar = "";
+                taskGroup = "";
+              });
+              taskCreationDialog();
+            }
           },
           style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
