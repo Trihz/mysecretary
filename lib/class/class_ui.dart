@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mysecretary/class/class_logic.dart';
 
 class Class extends StatefulWidget {
-  const Class({super.key});
+  // variable to store the deleted tasks
+  List<int> deletedTasks = [];
+
+  Class(this.deletedTasks, {Key? key}) : super(key: key);
 
   @override
   State<Class> createState() => _ClassState();
@@ -203,7 +206,8 @@ class _ClassState extends State<Class> {
 
   @override
   void initState() {
-    classTasksHashMap = Classlogic().readClassTasks(); // initialize class tasks
+    classTasksHashMap = Classlogic()
+        .readClassTasks(widget.deletedTasks); // initialize class tasks
     super.initState();
   }
 
