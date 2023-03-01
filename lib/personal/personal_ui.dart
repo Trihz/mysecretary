@@ -3,7 +3,10 @@ import "package:flutter/material.dart";
 import 'package:mysecretary/personal/personal_logic.dart';
 
 class Personal extends StatefulWidget {
-  const Personal({super.key});
+  // variable to store the deleted tasks
+  List<int> deletedTasks = [];
+
+  Personal(this.deletedTasks, {Key? key}) : super(key: key);
 
   @override
   State<Personal> createState() => _PersonalState();
@@ -189,8 +192,8 @@ class _PersonalState extends State<Personal> {
 
   @override
   void initState() {
-    personalTasksHashMap =
-        PersonalLogic().readPersonalTasks(); // initialize class tasks
+    personalTasksHashMap = PersonalLogic()
+        .readPersonalTasks(widget.deletedTasks); // initialize class tasks
     super.initState();
   }
 

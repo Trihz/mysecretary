@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       /// if the initial status is not null execute this (Go to Personal() page)
       else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Personal()));
+            context, MaterialPageRoute(builder: (context) =>  Personal(deletedTasks)));
       }
     }
 

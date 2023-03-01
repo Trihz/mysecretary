@@ -20,6 +20,10 @@ class Classlogic {
         fontSize: 16.0);
   }
 
+
+
+
+
   /*
       Function to read all the data stored in the local database that have "class" as their grouping
       - the data is displayed in a containers
@@ -79,6 +83,17 @@ class Classlogic {
     displayToast(classTasks.toString());
     return classTasks;
   }
+
+
+
+
+
+
+
+
+
+
+
 
   /* 
       Function to determine if the task is active or not
