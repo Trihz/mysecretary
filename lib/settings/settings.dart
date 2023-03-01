@@ -29,7 +29,8 @@ class _SettingsState extends State<Settings> {
   bool notifyEnabled = false;
 
   /// these variable store the password settings
-  String oldPassword = "";
+  String oldPasswordStored = "";
+  String oldPasswordEntered = "";
   String newPassword = "";
 
   /// these variables store the username details
@@ -40,7 +41,7 @@ class _SettingsState extends State<Settings> {
   String notificationTypeString = "Message";
   String notificationTime = "";
 
-  // this variable sets the initial value for the dropdown
+  // this variable sets the initial value for the
   String initialValue = "Message";
 
   // this variable stores the dropdown items
@@ -61,13 +62,35 @@ class _SettingsState extends State<Settings> {
         fontSize: 16.0);
   }
 
+  /// function to chcek whether the password entered by the user matches the password already present in the database
+  /// this ensures that the user does
+  /*void checkPasswordmatch(String oldPasswordEntered, String oldPasswordStored) {
+    print("Entered password ${oldPasswordEntered}");
+    print("Stored password ${oldPasswordStored}");
+    if (oldPasswordEntered == oldPasswordStored) {
+      print("Correct password");
+      /*SettingsLogic().saveSettings(
+                newPassword,
+                newUsername,
+                notificationType,
+                passwordEnabled,
+                autoDeleteEnabled,
+                notifyEnabled);*/
+    } else {
+      print("In correct password");
+    }
+  }*/
+
   /// this function reads the current settings from the database
   /// it assigns these settings as the default values to the settings variables
   /// if a setting is not modified it retains its default value
+  /// "newPassword" and "newusername" gets assigned the old values so that they will retain them is they are not modified by the user
+  /// if a value is not changed it retians the old value
   void readDefaultSettings() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      oldPassword = sharedPreferences.getString("Userpassword").toString();
+      oldPasswordStored =
+          sharedPreferences.getString("Userpassword").toString();
       newPassword = sharedPreferences.getString("Userpassword").toString();
       newUsername = sharedPreferences.getString("Username").toString();
       notificationType =
@@ -270,7 +293,7 @@ class _SettingsState extends State<Settings> {
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
-                      oldPassword = value;
+                      oldPasswordEntered = value;
                     });
                   },
                   decoration: const InputDecoration(
@@ -657,13 +680,7 @@ class _SettingsState extends State<Settings> {
             borderRadius: BorderRadius.all(Radius.circular(20))),
         child: GestureDetector(
           onTap: () {
-            SettingsLogic().saveSettings(
-                newPassword,
-                newUsername,
-                notificationType,
-                passwordEnabled,
-                autoDeleteEnabled,
-                notifyEnabled);
+            confirmChangesDialog();
           },
           child: const Center(
               child: Text(
@@ -765,6 +782,43 @@ class _SettingsState extends State<Settings> {
                     // delete both databases
                     SettingsLogic().deleteActiveTasksDatabase();
                     SettingsLogic().deleteInactiveTasksDatabase();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.grey,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  child: const Text("CONFIRM")),
+            ),
+          )));
+
+  /// alert dialog to prompt the user to confirm settings changes
+  Future confirmChangesDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          icon: const Icon(
+            Icons.update,
+            size: 100,
+            color: Colors.black26,
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    /// confirm the changes
+                    SettingsLogic().saveSettings(
+                        newPassword,
+                        newUsername,
+                        notificationType,
+                        passwordEnabled,
+                        autoDeleteEnabled,
+                        notifyEnabled);
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(

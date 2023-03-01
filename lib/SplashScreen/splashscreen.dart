@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:mysecretary/configuration/configuration_ui.dart';
 import 'package:mysecretary/homescreen/homescreen_ui.dart';
+import 'package:mysecretary/password/password_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OpeningScreen extends StatefulWidget {
@@ -14,10 +15,17 @@ class OpeningScreen extends StatefulWidget {
 }
 
 class _OpeningScreenState extends State<OpeningScreen> {
-  // variable to store the main color
-  Color mainColor = const Color.fromARGB(255, 41, 143, 174);
+  /// variable to store the password enable status
+  bool passwordEnabledStatus = false;
 
-  // widget to display the animated welcoming text
+  /// check the the user has enabled password
+  void checkPasswordStatus() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    passwordEnabledStatus = sharedPreferences.getBool("PasswordStatus")!;
+    print(passwordEnabledStatus);
+  }
+
+  /// widget to display the animated welcoming text
   Widget welcomingText() {
     return Container(
         height: MediaQuery.of(context).size.height * 0.4,
@@ -51,13 +59,17 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
+    checkPasswordStatus();
     super.initState();
     /*SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("isConfigured", false);*/
     Timer(
         const Duration(milliseconds: 5700),
-        () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen())));
+        () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    passwordEnabledStatus ? const PasswordPage() : const HomeScreen())));
   }
 
   @override

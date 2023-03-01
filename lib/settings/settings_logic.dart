@@ -40,6 +40,8 @@ class SettingsLogic {
     sharedPreferences.setBool("NotifyStatus", notifyEnabled);
   }
 
+  
+
   /// this function deletes the whole database including all the data contained in the database
   /// it deletes the tasks database
   void deleteActiveTasksDatabase() async {
