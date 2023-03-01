@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mysecretary/SplashScreen/splashscreen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mysecretary/password/password_ui.dart';
 
 void main() async {
   await Hive.initFlutter();
