@@ -45,6 +45,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   quiver: ^3.2.1
   image_picker: ^0.8.6+2
+  
 
 
 dev_dependencies:

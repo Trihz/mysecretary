@@ -50,6 +50,8 @@ class _SettingsState extends State<Settings> {
     "Ringtone",
   ];
 
+  TimeOfDay timeOfDay = TimeOfDay.now();
+
   // function to display the toast
   void displayToast(String message) {
     Fluttertoast.showToast(
@@ -619,38 +621,43 @@ class _SettingsState extends State<Settings> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Row(
-                          children: const [
-                            Icon(
-                              Icons.punch_clock,
-                              size: 20,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              "Set",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 13),
-                            ),
-                          ],
-                        )),
+                    GestureDetector(
+                      onTap: () {
+                        selectTime();
+                      },
+                      child: Container(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          decoration:
+                              const BoxDecoration(color: Colors.transparent),
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.punch_clock,
+                                size: 20,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "Set",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13),
+                              ),
+                            ],
+                          )),
+                    ),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.05,
                       width: MediaQuery.of(context).size.width * 0.35,
                       decoration:
                           const BoxDecoration(color: Colors.transparent),
-                      child: const Align(
+                      child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "2100hrs",
-                          style: TextStyle(
+                          "${timeOfDay.hour.toString().padLeft(2, "0")}:${timeOfDay.minute.toString().padLeft(2, "0")} ${timeOfDay.period.name.toString()}",
+                          style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
                               fontSize: 13),
@@ -830,4 +837,14 @@ class _SettingsState extends State<Settings> {
                   child: const Text("CONFIRM")),
             ),
           )));
+
+  Future<void> selectTime() async {
+    TimeOfDay? pickedTime =
+        await showTimePicker(context: context, initialTime: timeOfDay);
+    if (pickedTime != null) {
+      setState(() {
+        timeOfDay = pickedTime;
+      });
+    }
+  }
 }

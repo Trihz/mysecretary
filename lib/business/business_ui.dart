@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mysecretary/business/business_logic.dart';
 
 class Business extends StatefulWidget {
-  const Business({super.key});
+  // variable to store the deleted tasks
+  List<int> deletedTasks = [];
+
+  Business(this.deletedTasks, {Key? key}) : super(key: key);
 
   @override
   State<Business> createState() => _BusinessState();
@@ -190,7 +193,7 @@ class _BusinessState extends State<Business> {
   @override
   void initState() {
     businessTasksHashMap =
-        BusinessLogic().readBusinessTasks(); // initialize business tasks
+        BusinessLogic().readBusinessTasks(widget.deletedTasks); // initialize business tasks
     super.initState();
   }
 
