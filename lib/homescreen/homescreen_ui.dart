@@ -69,6 +69,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   HashMap<int, List<String>> tasksHashMap = HashMap();
   HashMap<int, List<String>> todaysTasksHashMap = HashMap();
 
+  /// this variable stores the length of tasks corresponding to the
+  int taskslength = 0;
+
   File? profileImage;
 
   /// function to pick the profile image from the local database
@@ -208,8 +211,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       /// if the initial status is not null execute this (Go to Personal() page)
       else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>  Personal(deletedTasks)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Personal(deletedTasks)));
       }
     }
 
@@ -235,8 +238,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       /// if the initial status is not null execute this (Go to Business() page)
       else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>  Business(deletedTasks)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Business(deletedTasks)));
       }
     }
 
@@ -319,7 +322,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   /// the snackbar contains tasks specific for the pressed date
   void showSnackbBar(String dateClicked) {
     final snackBar = SnackBar(
-      showCloseIcon: true,
       backgroundColor: Colors.white,
       margin: const EdgeInsets.only(right: 3, left: 3),
       duration: const Duration(days: 365),
@@ -327,11 +329,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       behavior: SnackBarBehavior.floating,
       elevation: 40,
       content: Container(
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 1,
         width: MediaQuery.of(context).size.width * 1,
         decoration: const BoxDecoration(color: Colors.transparent),
         child: Column(
           children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.07),
             Container(
                 height: MediaQuery.of(context).size.height * 0.07,
                 width: MediaQuery.of(context).size.width * 1,
@@ -346,8 +349,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 )),
             Container(
-              height: MediaQuery.of(context).size.height * 0.43,
+              height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width * 1,
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               decoration: const BoxDecoration(color: Colors.transparent),
               child: ListView.builder(
                   itemCount: tasksForDateTappedHashMap.length,
@@ -431,6 +435,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     );
                   })),
             ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: ElevatedButton(
+                  onPressed: () {
+                    /// hide the snackbar after initialization process
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
+                      shadowColor: Colors.grey,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  child: const Text(
+                    "BACK",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500),
+                  )),
+            )
           ],
         ),
       ),
@@ -771,8 +798,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     String date_clicked = HomeScreenLogic()
                         .buildScrollingDate(dates[index].toString());
                     tasksForDateTappedHashMap = HomeScreenLogic()
-                        .readTasksForDayTapped(
-                            date_clicked); // initialize tasks for date tapped
+                        .readTasksForDayTapped(date_clicked,
+                            deletedTasks); // initialize tasks for date tapped
                     showSnackbBar(date_clicked);
                   }),
                   child: Container(
